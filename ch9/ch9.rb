@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'pry'
+
 class Encrypter
   def initialize(key)
     @key = key
@@ -9,7 +11,8 @@ class Encrypter
     key_index = 0
     while not reader.eof?
       clear_char = reader.getc
-      encrypted_char = clear_char ^ @key[key_index]
+      binding.pry
+      encrypted_char = clear_char.bytes.first ^ @key[key_index].bytes.first
       writer.putc(encrypted_char)
       key_index = (key_index + 1) % @key.size
     end
@@ -26,6 +29,17 @@ describe Encrypter do
   end
 
   it 'encrypts' do
-  encrypter = Encrypter.new(@key)
+    encrypter = Encrypter.new(@key)
   end
+end
+
+reader = File.open('/tmp/message.txt')
+writer = File.open('/tmp/encrypted.txt', "w")
+encrypter = Encrypter.new('my secret key')
+encrypter.encrypt(reader, writer)
+
+class StringIOAdapter
+end
+
+describe StringIOAdapter do
 end
