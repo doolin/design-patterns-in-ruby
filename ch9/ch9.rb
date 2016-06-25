@@ -37,7 +37,31 @@ encrypter = Encrypter.new('my secret key')
 encrypter.encrypt(reader, writer)
 
 class StringIOAdapter
+  def initialize(string)
+    @byte_string = string.bytes
+    @position = 0
+  end
+
+  def getbyte
+    raise EOFError if @position >= @byte_string.length
+
+    ch = @byte_string[@position]
+    @position += 1
+    ch
+  end
 end
 
 describe StringIOAdapter do
+  it 'instantiates' do
+    expect(StringIOAdapter.new('string')).not_to be nil
+  end
+
+  describe 'getbyte' do
+    it 'gets a byte' do
+      string = 'string'
+      expected_byte = string.bytes[0]
+      actual_byte = StringIOAdapter.new('string').getbyte
+      expect(actual_byte). to eq expected_byte
+    end
+  end
 end
