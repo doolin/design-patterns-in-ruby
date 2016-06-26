@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# TODO: fill out the specs
+
+require 'rspec'
 require 'pry'
 
 class Encrypter
@@ -35,6 +38,12 @@ reader = File.open('/tmp/message.txt')
 writer = File.open('/tmp/encrypted.txt', "w")
 encrypter = Encrypter.new('my secret key')
 encrypter.encrypt(reader, writer)
+writer.close
+
+reader = File.open('/tmp/encrypted.txt')
+writer = File.open('/tmp/decrypted.txt', "w")
+encrypter = Encrypter.new('my secret key')
+encrypter.encrypt(reader, writer)
 
 class StringIOAdapter
   def initialize(string)
@@ -48,6 +57,10 @@ class StringIOAdapter
     ch = @byte_string[@position]
     @position += 1
     ch
+  end
+
+  def eof?
+    return @position >= @byte_string.length
   end
 end
 
@@ -65,3 +78,15 @@ describe StringIOAdapter do
     end
   end
 end
+
+encrypter = Encrypter.new('XYZZY')
+reader = StringIOAdapter.new('We attack at dawn')
+writer = File.open('/tmp/out.txt', 'w')
+encrypter.encrypt(reader, writer)
+writer.close
+
+encrypter = Encrypter.new('XYZZY')
+# reader = StringIOAdapter.new('We attack at dawn')
+reader = File.open('/tmp/out.txt')
+writer = File.open('/tmp/in.txt', 'w')
+encrypter.encrypt(reader, writer)
