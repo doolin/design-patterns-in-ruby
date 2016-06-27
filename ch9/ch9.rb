@@ -29,8 +29,8 @@ describe Encrypter do
     expect(Encrypter.new(@key)).to_not be nil
   end
 
-  it 'encrypts' do
-    encrypter = Encrypter.new(@key)
+  xit 'encrypts' do
+    _encrypter = Encrypter.new(@key)
   end
 end
 
@@ -73,8 +73,31 @@ describe StringIOAdapter do
     it 'gets a byte' do
       string = 'string'
       expected_byte = string.bytes[0]
-      actual_byte = StringIOAdapter.new('string').getbyte
-      expect(actual_byte). to eq expected_byte
+      actual_byte = StringIOAdapter.new(string).getbyte
+      expect(actual_byte).to eq expected_byte
+    end
+   end
+
+  describe 'eof?' do
+    it 'mimics end of file condition with empty string' do
+      expect(StringIOAdapter.new('').eof?).to be true
+    end
+
+    it 'mimics end of file condition with non-empty string' do
+      sioa = StringIOAdapter.new('123')
+      (1..3).each { sioa.getbyte }
+      expect(sioa.eof?).to be true
+    end
+
+    it 'returns false when not at end of string' do
+      expect(StringIOAdapter.new('a').eof?).to_not be true
+    end
+
+    it 'expects .eof? to raise EOFError when traversing past end of string' do
+      sioa = StringIOAdapter.new('123')
+      expect {
+        (1..4).each { sioa.getbyte }
+      }.to raise_error(EOFError)
     end
   end
 end
