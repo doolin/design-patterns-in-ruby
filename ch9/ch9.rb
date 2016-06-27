@@ -109,7 +109,66 @@ encrypter.encrypt(reader, writer)
 writer.close
 
 encrypter = Encrypter.new('XYZZY')
-# reader = StringIOAdapter.new('We attack at dawn')
 reader = File.open('/tmp/out.txt')
 writer = File.open('/tmp/in.txt', 'w')
 encrypter.encrypt(reader, writer)
+
+############# page 167 ###############
+
+class Renderer
+  def render(text_object)
+    _text = text_object.text
+    _size = text_object.size
+    _color = text_object.color
+
+    ### render the text
+  end
+end
+
+class TextObject
+  attr_reader :text, :size_inches, :color
+
+  def initialize(text, size_inches, color)
+    @text = text
+    @size_inches = size_inches
+    @color = color
+  end
+end
+
+class BritishTextObject
+  attr_reader :string, :size_mm, :colour
+
+  def initialize(string, size_mm, colour)
+    @string = string
+    @size_mm = size_mm
+    @colour = colour
+  end
+end
+
+############# page 168 ###############
+
+class BritishTextObjectAdapter < TextObject
+  def initialize(bto)
+    @bto = bto
+  end
+
+  # Note that the book specifies explicit `return`
+  def text
+    @bto.string
+  end
+
+  def size_inches
+    @bto.size_mm / 25.4
+  end
+
+  def color
+    @bto.colour
+  end
+end
+
+describe BritishTextObjectAdapter do
+  it 'instantiates correctly' do
+    bto = BritishTextObject.new('egad', 25.4, :blue)
+    expect(BritishTextObjectAdapter.new(bto)).to_not be nil
+  end
+end
