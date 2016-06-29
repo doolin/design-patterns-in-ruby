@@ -12,7 +12,7 @@ class Encrypter
 
   def encrypt(reader, writer)
     key_index = 0
-    while not reader.eof?
+    until reader.eof?
       encrypted_char = reader.getbyte ^ @key.getbyte(key_index)
       writer.putc(encrypted_char)
       key_index = (key_index + 1) % @key.size
@@ -36,13 +36,13 @@ describe Encrypter do
 end
 
 reader = File.open('/tmp/message.txt')
-writer = File.open('/tmp/encrypted.txt', "w")
+writer = File.open('/tmp/encrypted.txt', 'w')
 encrypter = Encrypter.new('my secret key')
 encrypter.encrypt(reader, writer)
 writer.close
 
 reader = File.open('/tmp/encrypted.txt')
-writer = File.open('/tmp/decrypted.txt', "w")
+writer = File.open('/tmp/decrypted.txt', 'w')
 encrypter = Encrypter.new('my secret key')
 encrypter.encrypt(reader, writer)
 
@@ -61,7 +61,7 @@ class StringIOAdapter
   end
 
   def eof?
-    return @position >= @byte_string.length
+    @position >= @byte_string.length
   end
 end
 
@@ -77,7 +77,7 @@ describe StringIOAdapter do
       actual_byte = StringIOAdapter.new(string).getbyte
       expect(actual_byte).to eq expected_byte
     end
-   end
+  end
 
   describe 'eof?' do
     it 'mimics end of file condition with empty string' do
@@ -96,9 +96,9 @@ describe StringIOAdapter do
 
     it 'expects .eof? to raise EOFError when traversing past end of string' do
       sioa = StringIOAdapter.new('123')
-      expect {
+      expect do
         (1..4).each { sioa.getbyte }
-      }.to raise_error(EOFError)
+      end.to raise_error(EOFError)
     end
   end
 end
@@ -182,7 +182,6 @@ describe BritishTextObjectAdapter do
   end
 end
 
-
 ###### p. 169 Reopen BritishTextObject #######
 
 class BritishTextObject
@@ -207,7 +206,6 @@ describe BritishTextObject do
     expect(bto.size_inches).to eq bto.size_mm / 25.4
   end
 end
-
 
 ######## p. 170 ################
 
