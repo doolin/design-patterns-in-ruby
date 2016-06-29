@@ -29,6 +29,7 @@ describe Encrypter do
     expect(Encrypter.new(@key)).to_not be nil
   end
 
+  # TODO: finish this up
   xit 'encrypts' do
     _encrypter = Encrypter.new(@key)
   end
@@ -115,6 +116,8 @@ encrypter.encrypt(reader, writer)
 
 ############# page 167 ###############
 
+# This class is included for demo purposes, as it's
+# in the text, it may as well be here so we can play along.
 class Renderer
   def render(text_object)
     _text = text_object.text
@@ -168,7 +171,65 @@ end
 
 describe BritishTextObjectAdapter do
   it 'instantiates correctly' do
+    color = :blue
+    text = 'egad'
+    size = 25.4
+    bto = BritishTextObject.new(text, size, color)
+    btoa = BritishTextObjectAdapter.new(bto)
+    expect(btoa.color).to eq color
+    expect(btoa.text).to eq text
+    expect(btoa.size_inches).to eq size / 25.4
+  end
+end
+
+
+###### p. 169 Reopen BritishTextObject #######
+
+class BritishTextObject
+  def color
+    colour
+  end
+
+  def text
+    string
+  end
+
+  def size_inches
+    size_mm / 25.4
+  end
+end
+
+describe BritishTextObject do
+  it 'uses monkey patched methods' do
     bto = BritishTextObject.new('egad', 25.4, :blue)
-    expect(BritishTextObjectAdapter.new(bto)).to_not be nil
+    expect(bto.colour).to eq bto.color
+    expect(bto.string).to eq bto.text
+    expect(bto.size_inches).to eq bto.size_mm / 25.4
+  end
+end
+
+
+######## p. 170 ################
+
+describe 'modifying a single instance' do
+  bto = BritishTextObject.new('egad', 25.4, :blue)
+  class << bto
+    def color
+      colour
+    end
+
+    def text
+      string
+    end
+
+    def size_inches
+      size_mm / 25.4
+    end
+  end
+
+  it 'uses methods defined on a single instance' do
+    expect(bto.colour).to eq bto.color
+    expect(bto.string).to eq bto.text
+    expect(bto.size_inches).to eq bto.size_mm / 25.4
   end
 end
