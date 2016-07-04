@@ -1,6 +1,5 @@
 # Filling in the gaps with the Adapter
 
-![If it looks like a duck, quacks like a duck...](./duck_typing.jpg)
 
 # Three ways to adapt
 
@@ -13,25 +12,34 @@
 ~~~
 @@@ruby
 
-class MyClass
-  attr_reader :fou
-end
-
-class MyClassAdapter < MyClass
-  def foo
-    @fou
+  class MyClass
+    attr_reader :fou
   end
-end
+
+  class MyClassAdapter < MyClass
+    def foo
+      @fou
+    end
+  end
 ~~~
 
 
 
-# Monkey patch
+# Monkey patch 🙈
 
 ~~~
 @@@ruby
 
+  class MyClass
+    attr_reader :fou
+  end
+
   # Monkey patch
+  class MyClass
+    def foo
+      @fou
+    end
+  end
 ~~~
 
 
@@ -45,13 +53,13 @@ I was terribly impressed, but I haven't seen it elsewhere in the wild.
 ~~~
 @@@ruby
 
-bto = BritishTextObject('hello', 50.8, :blue)
+  bto = BritishTextObject('hello', 50.8, :blue)
 
-class << bto
-  def text
-    string
+  class << bto
+    def text
+      string
+    end
   end
-end
 ~~~
 
 # Questions?
@@ -59,6 +67,12 @@ end
 
 # More?
 
-# No more!
 
-## Done here
+# Adapter in the wild
+
+
+![If it looks like a duck, quacks like a duck...](./duck_typing.jpg)
+
+# Even more?
+
+# No more!
