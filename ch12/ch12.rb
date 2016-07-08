@@ -23,7 +23,6 @@ class ClassVariableTester
   end
 end
 
-
 describe ClassVariableTester do
   it 'instantiates' do
     expect(ClassVariableTester.new).not_to be nil
@@ -35,5 +34,19 @@ describe ClassVariableTester do
     cl.increment
     expect(cl.class_count).to be 2
     expect(cl.instance_count).to be 2
+  end
+end
+
+
+# p. 209
+describe 'class methods and instance methods are different' do
+  class SomeClass
+    def a_method
+      puts 'hello from a method'
+    end
+  end
+
+  it 'raises when invoking an instance method from a class' do
+    expect { SomeClass.a_method }.to raise_error(NoMethodError)
   end
 end
