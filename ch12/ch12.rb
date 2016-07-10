@@ -74,3 +74,24 @@ describe 'self vs. self' do
     expect(instance_id).not_to eq class_id
   end
 end
+
+# p. 210
+class SomeClass
+  def self.class_level_method
+    'class_level_method'
+  end
+
+  def SomeClass.other_class_method
+    'other_class_method'
+  end
+end
+
+describe SomeClass do
+  it 'calls class method defined with self' do
+    expect(SomeClass.class_level_method).to eq 'class_level_method'
+  end
+
+  it 'calls class method defined with class name' do
+    expect(SomeClass.class_level_method).to eq 'class_level_method'
+  end
+end
