@@ -124,8 +124,27 @@ class SimpleLogger
     @log.puts(msg) if @level >= INFO
     @log.flush
   end
+
+  # p. 212
+  # @@instance = SimpleLogger.new
+  @@instance = new
+
+  def self.instance
+    @@instance
+  end
+
+  # p.213
+  private_class_method :new
 end
 
 describe SimpleLogger do
-  it 'logs, simply'
+  it 'creates a single instance of itself' do
+    instance1 = SimpleLogger.instance
+    instance2 = SimpleLogger.instance
+    expect(instance1).to eq instance2
+  end
+
+  it 'instantiating directly raises NoMethodError' do
+    expect { SimpleLogger.new }.to raise_error(NoMethodError)
+  end
 end
