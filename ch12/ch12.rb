@@ -148,3 +148,20 @@ describe SimpleLogger do
     expect { SimpleLogger.new }.to raise_error(NoMethodError)
   end
 end
+
+
+# p. 214 singleton module, very convenient!
+describe 'the singleton module' do
+  require 'singleton'
+  class S
+    include Singleton
+  end
+
+  it 'responds to .instance' do
+    expect(S).to respond_to(:instance)
+  end
+
+  it 'does not respond to .new' do
+    expect { Singleton.new }.to raise_error(NoMethodError)
+  end
+end
