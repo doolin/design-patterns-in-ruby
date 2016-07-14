@@ -127,6 +127,8 @@ class SimpleLogger
 
   # p. 212
   # @@instance = SimpleLogger.new
+  # Eager instantiation; do not wait until
+  # future client needs instance.
   @@instance = new
 
   def self.instance
@@ -163,5 +165,38 @@ describe 'the singleton module' do
 
   it 'does not respond to .new' do
     expect { Singleton.new }.to raise_error(NoMethodError)
+  end
+end
+
+# p. 217 Class as Singleton
+class ClassBasedLogger
+  ERROR = 1
+  WARNING = 2
+  INFO = 3
+
+  @@log = File.open('log.txt', 'w')
+  @@level = WARNING
+
+  def self.error(msg)
+    @@log.puts(msg)
+    @@log.flush
+  end
+
+  def self.warning(msg)
+    @@log.puts(msg) if @@level >= WARNING
+    @@log.flush
+  end
+
+  def self.info(msg)
+    @@log.puts(msg) if level >= INFO
+    @@log.flush
+  end
+
+  def self.level=(new_level)
+    @@level = new_level
+  end
+
+  def self.level
+    @@level
   end
 end
