@@ -169,6 +169,8 @@ describe 'the singleton module' do
 end
 
 # p. 217 Class as Singleton
+# Don't really see any interesting specs for this which haven't
+# been already covered, and the book doesn't really use it.
 class ClassBasedLogger
   ERROR = 1
   WARNING = 2
@@ -198,5 +200,24 @@ class ClassBasedLogger
 
   def self.level
     @@level
+  end
+end
+
+# p. 222 using a singleton
+class PrefernceManager
+  def initialize
+    @reader = PrefReader.new
+    @writer = PrefWriter.new
+    @preferences = { display_flash: false, background_color: :blue }
+  end
+
+  def save_preferences
+    _preferences = {}
+    # Preferences are in
+    @writer.write(@preferences)
+  end
+
+  def get_preferences
+    @preferences = @reader.read
   end
 end
