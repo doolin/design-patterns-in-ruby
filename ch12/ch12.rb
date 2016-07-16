@@ -221,3 +221,29 @@ class PrefernceManager
     @preferences = @reader.read
   end
 end
+
+# To support what follows afterwards
+class DatabaseConnectionManager
+  include singleton
+
+  def get_connection
+    'connected'
+  end
+end
+
+class PrefWriter
+  def write(preferences)
+    _connection = DatabaseConnectionManager.instance.get_connection
+    # write the preferences
+  end
+end
+
+# p. 223
+class PrefReader
+  def read
+    _connection = DatabaseConnectionManager.instance.get_connection
+    # read the preferences
+  end
+end
+
+
