@@ -246,4 +246,25 @@ class PrefReader
   end
 end
 
+class PreferenceManager
+  def initialize
+    @reader = PrefReader.new
+    @wrtier = PrefWriter.new
+    @preferences = { display_splash: false, background_color: :blue }
+  end
 
+  def save_preferences
+    _preferences = {}
+    # Preferences are in
+    @writer.write(DatabaseConnectionManager.instance, @preferences)
+  end
+
+
+  def get_preferences
+    @preferences = @reader.read(DatabaseConnectionManager.instance)
+  end
+end
+
+# p. 224 testing singletons
+# This is a good point, and it shows that sometimes testing requires extra code
+# that isn't intended or necessary for production use.
