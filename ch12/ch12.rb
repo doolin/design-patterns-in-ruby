@@ -268,3 +268,13 @@ end
 # p. 224 testing singletons
 # This is a good point, and it shows that sometimes testing requires extra code
 # that isn't intended or necessary for production use.
+
+# This class for testing methods in isolation.
+require 'singleton'
+class SimpleLogger
+end
+
+# This class for production
+class SingletonLogger < SimpleLogger
+  include singleton
+end
