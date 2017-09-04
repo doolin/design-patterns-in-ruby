@@ -9,6 +9,11 @@ require 'rspec/autorun'
 # * Prefer composition over inheritance.
 # * Delegate, delegate, delegate.
 
+# In this example from chapter 1, starting and stopping
+# engines is delegated to specific engine classes. I've gone
+# a little further and moved the start and stop into a
+# super class.
+
 class Engine
   def start
     "engine started"
@@ -26,6 +31,8 @@ class DieselEngine < Engine
 end
 
 class Car
+  # It would almost surely be better to pass the engine
+  # class in as a parameter.
   def initialize
     @engine = GasolineEngine.new
   end
@@ -34,6 +41,11 @@ class Car
     @engine.start << 'cruising around' << @engine.stop
   end
 
+  # For those vehicles which (apparently) have a choice
+  # of engines to start, starting a different engine might
+  # be better abstracted out into a class for selecting
+  # an engine. Situation dictates. But this doesn't smell
+  # right to me.
   def switch_to_diesel
     @emgine = DieselEngine.new
   end
