@@ -33,8 +33,43 @@ class Report
     output_end
   end
 
+  # __method__ is ruby method unavailable in 2007.
   def output_start
     raise "You must override #{__method__} in subclass"
+  end
+
+  def output_head
+    raise "You must override #{__method__} in subclass"
+  end
+
+  def output_body_start
+    raise "You must override #{__method__} in subclass"
+  end
+
+  def output_body
+    raise "You must override #{__method__} in subclass"
+  end
+
+  def output_body_end
+    raise "You must override #{__method__} in subclass"
+  end
+
+  def output_end
+    raise "You must override #{__method__} in subclass"
+  end
+end
+
+class HTMLReport < Report
+  def output_start
+    '<html>'
+  end
+end
+
+RSpec.describe HTMLReport do
+  describe '#output_start' do
+    it '' do
+      expect(described_class.new.output_start).to eq '<html>'
+    end
   end
 end
 
@@ -51,11 +86,11 @@ RSpec.describe Report do
     end
   end
 
-  describe 'output_start' do
-    it 'expects override' do
+  ['output_start', 'output_head', 'output_body_start'].each do |method|
+    it "raises NoMethodError for #{method}" do
       expect {
-        described_class.new.output_start
-      }.to raise_error("You must override output_start in subclass")
+        described_class.new.send method
+      }.to raise_error("You must override #{method} in subclass")
     end
   end
 end
