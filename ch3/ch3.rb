@@ -47,6 +47,12 @@ class Report
   end
 
   def output_body
+    @text.each do |line|
+      output_line(line)
+    end
+  end
+
+  def output_line
     raise "You must override #{__method__} in subclass"
   end
 
@@ -63,12 +69,36 @@ class HTMLReport < Report
   def output_start
     '<html>'
   end
+
+  def output_end
+    '</html>'
+  end
+end
+
+class PlainTextReport
+  def output_start
+    ''
+  end
+end
+
+RSpec.describe PlainTextReport do
+  describe '#output_start' do
+    it '' do
+      expect(described_class.new.output_start).to eq ''
+    end
+  end
 end
 
 RSpec.describe HTMLReport do
   describe '#output_start' do
     it '' do
       expect(described_class.new.output_start).to eq '<html>'
+    end
+  end
+
+  describe '#output_end' do
+    it '' do
+      expect(described_class.new.output_end).to eq '</html>'
     end
   end
 end
@@ -86,7 +116,8 @@ RSpec.describe Report do
     end
   end
 
-  ['output_start', 'output_head', 'output_body_start'].each do |method|
+  ['output_start', 'output_head', 'output_body_start', 'output_line',
+  'output_body_end', 'output_end'].each do |method|
     it "raises NoMethodError for #{method}" do
       expect {
         described_class.new.send method
