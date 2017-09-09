@@ -94,6 +94,14 @@ class PlainTextReport
   def output_body_start
     ''
   end
+
+  def output_body_end
+    ''
+  end
+
+  def output_end
+    ''
+  end
 end
 
 RSpec.describe PlainTextReport do
@@ -110,6 +118,18 @@ RSpec.describe PlainTextReport do
   describe '#output_body_start' do
     it '' do
       expect(described_class.new.output_body_start).to eq ''
+    end
+  end
+
+  describe '#output_body_end' do
+    it '' do
+      expect(described_class.new.output_body_end).to eq ''
+    end
+  end
+
+  describe '#output_end' do
+    it '' do
+      expect(described_class.new.output_end).to eq ''
     end
   end
 end
