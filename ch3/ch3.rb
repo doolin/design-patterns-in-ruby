@@ -82,13 +82,13 @@ class HTMLReport < Report
   end
 end
 
-class PlainTextReport
+class PlainTextReport < Report
   def output_start
     ''
   end
 
   def output_head
-    'FIXME'
+    "**** #{@title} ****"
   end
 
   def output_body_start
@@ -112,7 +112,9 @@ RSpec.describe PlainTextReport do
   end
 
   describe '#output_head' do
-    it ''
+    it '' do
+      expect(described_class.new.output_head).to eq "**** monthly report ****"
+    end
   end
 
   describe '#output_body_start' do
