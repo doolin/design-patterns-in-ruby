@@ -80,6 +80,14 @@ class HTMLReport < Report
     head << "    <title>#{@title}</title>"
     head << '  </head>'
   end
+
+  def output_body_start
+    '<body>'
+  end
+
+  def output_body_end
+    '</body>'
+  end
 end
 
 class PlainTextReport < Report
@@ -156,6 +164,18 @@ RSpec.describe HTMLReport do
   describe '#output_end' do
     it '' do
       expect(described_class.new.output_end).to eq '</html>'
+    end
+  end
+
+  describe '#output_body_start' do
+    it '' do
+      expect(described_class.new.output_body_start).to eq '<body>'
+    end
+  end
+
+  describe '#output_body_end' do
+    it '' do
+      expect(described_class.new.output_body_end).to eq '</body>'
     end
   end
 end
