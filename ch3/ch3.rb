@@ -25,12 +25,13 @@ class Report
   end
 
   def output_report
-    output_start
-    output_head
-    output_body_start
-    output_body
-    output_body_end
-    output_end
+    report = ''
+    report << output_start
+    report << output_head
+    report << output_body_start
+    report << output_body
+    report << output_body_end
+    report << output_end
   end
 
   # __method__ is ruby method unavailable in 2007.
@@ -52,7 +53,7 @@ class Report
     end
   end
 
-  def output_line
+  def output_line(line)
     raise "You must override #{__method__} in subclass"
   end
 
@@ -85,6 +86,10 @@ class HTMLReport < Report
     '<body>'
   end
 
+  def output_line(line)
+    "    <p>#{line}</p>"
+  end
+
   def output_body_end
     '</body>'
   end
@@ -105,6 +110,10 @@ class PlainTextReport < Report
 
   def output_body_end
     ''
+  end
+
+  def output_line(line)
+    line
   end
 
   def output_end
@@ -167,6 +176,12 @@ RSpec.describe HTMLReport do
     end
   end
 
+  describe '#output_line' do
+    it '' do
+      expect(described_class.new.output_line('foo')).to eq '    <p>foo</p>'
+    end
+  end
+
   describe '#output_body_start' do
     it '' do
       expect(described_class.new.output_body_start).to eq '<body>'
@@ -193,7 +208,13 @@ RSpec.describe Report do
     end
   end
 
-  ['output_start', 'output_head', 'output_body_start', 'output_line',
+  it "raises NoMethodError for output_line" do
+    expect {
+      described_class.new.output_line('foo')
+    }.to raise_error("You must override output_line in subclass")
+  end
+
+  ['output_start', 'output_head', 'output_body_start',
   'output_body_end', 'output_end'].each do |method|
     it "raises NoMethodError for #{method}" do
       expect {
@@ -202,3 +223,6 @@ RSpec.describe Report do
     end
   end
 end
+
+# puts HTMLReport.new.output_report
+# puts PlainTextReport.new.output_report
