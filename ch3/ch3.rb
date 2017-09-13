@@ -2,6 +2,8 @@
 
 require 'rspec/autorun'
 
+require 'pry'
+
 # The Template method
 
 class Report
@@ -48,8 +50,8 @@ class Report
   end
 
   def output_body
-    @text.each do |line|
-      output_line(line)
+    @text.reduce('') do |a, line|
+      a << output_line(line)
     end
   end
 
@@ -196,18 +198,6 @@ RSpec.describe HTMLReport do
 end
 
 RSpec.describe Report do
-  describe '.new' do
-    it 'instantiates' do
-      expect(Report.new).not_to be nil
-    end
-  end
-
-  describe '#output_report' do
-    xit'' do
-      expect(described_class.new.output_report).to match(/<title>monthly report<\/title>/)
-    end
-  end
-
   it "raises NoMethodError for output_line" do
     expect {
       described_class.new.output_line('foo')
@@ -224,5 +214,5 @@ RSpec.describe Report do
   end
 end
 
-# puts HTMLReport.new.output_report
-# puts PlainTextReport.new.output_report
+puts HTMLReport.new.output_report
+puts PlainTextReport.new.output_report
