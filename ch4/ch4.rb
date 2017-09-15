@@ -10,6 +10,23 @@ class Formatter
   end
 end
 
+class HTMLFormatter < Formatter
+  def output_report(title, text)
+    report = ''
+    report << 'html'
+    report << '  <head>'
+    report << "    <title>#{title}</title>"
+    report << '  </head>'
+    report << '  <body>'
+    report << '  </body>'
+    report << '/html'
+    report
+  end
+end
+
+RSpec.describe HTMLFormatter do
+end
+
 RSpec.describe Formatter do
   describe '#output_report' do
     it 'raises' do
