@@ -18,13 +18,27 @@ class HTMLFormatter < Formatter
     report << "    <title>#{title}</title>"
     report << '  </head>'
     report << '  <body>'
+    text.each do |line|
+      report << "      <p>#{line}</p>"
+    end
     report << '  </body>'
     report << '/html'
     report
   end
 end
 
+class PlainTextFormatter < Formatter
+end
+
 RSpec.describe HTMLFormatter do
+  describe '#output_report' do
+    it '' do
+      expect(HTMLFormatter.new.output_report("foo", ["bar"])).to match(/foo/)
+    end
+  end
+end
+
+RSpec.describe PlainTextFormatter do
 end
 
 RSpec.describe Formatter do
