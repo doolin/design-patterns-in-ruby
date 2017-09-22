@@ -28,6 +28,12 @@ class HTMLFormatter < Formatter
 end
 
 class PlainTextFormatter < Formatter
+  def output_report(title, text)
+    report = ''
+    report << "**** #{title} ****"
+    text.each { |line| report << line }
+    report
+  end
 end
 
 RSpec.describe HTMLFormatter do
@@ -39,6 +45,11 @@ RSpec.describe HTMLFormatter do
 end
 
 RSpec.describe PlainTextFormatter do
+  describe '#output_report' do
+    it '' do
+      expect(PlainTextFormatter.new.output_report('baz', ['quux'])).to match(/quux/)
+    end
+  end
 end
 
 RSpec.describe Formatter do
