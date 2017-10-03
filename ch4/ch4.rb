@@ -36,6 +36,21 @@ class PlainTextFormatter < Formatter
   end
 end
 
+class Report
+  attr_reader :title, :text
+  attr_accessor :formatter
+
+  def initialize(formatter)
+    @title = 'Monthly Report'
+    @text = ['Things are going well', 'really, really well']
+    @formatter = formatter
+  end
+
+  def output_report
+    @formatter.output_report(@title, @text)
+  end
+end
+
 RSpec.describe HTMLFormatter do
   describe '#output_report' do
     it '' do
