@@ -13,7 +13,7 @@ end
 class HTMLFormatter < Formatter
   def output_report(title, text)
     report = ''
-    report << 'html'
+    report << '<html>'
     report << '  <head>'
     report << "    <title>#{title}</title>"
     report << '  </head>'
@@ -22,7 +22,7 @@ class HTMLFormatter < Formatter
       report << "      <p>#{line}</p>"
     end
     report << '  </body>'
-    report << '/html'
+    report << '</html>'
     report
   end
 end
@@ -48,6 +48,26 @@ class Report
 
   def output_report
     @formatter.output_report(@title, @text)
+  end
+end
+
+RSpec.describe Report do
+  context 'PlainTextFormatter' do
+    example '#output_report' do
+      formatter = PlainTextFormatter.new
+      actual = Report.new(formatter).output_report
+      expect(actual).to match(/\*\*\*\* Monthly/)
+      expect(actual).to match(/well/)
+    end
+  end
+
+  context 'HTMLFormatter' do
+    example '#output_report' do
+      formatter = HTMLFormatter.new
+      actual = Report.new(formatter).output_report
+      expect(actual).to match(/<title>Monthly/)
+      expect(actual).to match(/well/)
+    end
   end
 end
 
