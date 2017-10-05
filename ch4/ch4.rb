@@ -2,7 +2,13 @@
 
 require 'rspec/autorun'
 
-# Page 77: Strategy pattern.
+# Page 77: Strategy pattern. A collection of objects which
+# do the same job in different ways, all using the same
+# interface. The authors provide an example of tax calculation
+# differing by states.
+#
+# Strategy pattern is implemented using delegation and composition
+# rather than inheritance.
 
 class Formatter
   def output_report(title, text)
