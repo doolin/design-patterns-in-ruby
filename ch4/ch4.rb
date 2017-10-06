@@ -102,3 +102,21 @@ RSpec.describe Formatter do
     end
   end
 end
+
+### Section on procs and lambdas
+#
+# This is good for review, procs and lambdas are the
+# more arcane areas of Ruby, and worth revisiting on
+# a regular basis.
+
+RSpec.describe 'page 85 on procs and lambdas' do
+  it '' do
+    name = 'john'
+    mary = Proc.new do
+      name = 'mary'
+    end
+    expect(name).to eq 'john'
+    mary.()
+    expect(name).to eq 'mary'
+  end
+end
