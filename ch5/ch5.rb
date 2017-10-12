@@ -43,6 +43,12 @@ class Payroll
   end
 end
 
+class TaxMan
+  def update(changed_employee)
+    "Send #{changed_employee.name} tax bill"
+  end
+end
+
 RSpec.describe Employee do
   describe 'new' do
     it 'instantiates' do
