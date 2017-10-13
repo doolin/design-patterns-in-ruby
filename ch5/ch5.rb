@@ -3,28 +3,13 @@
 require 'rspec/autorun'
 require 'pry'
 
-# Page 96: Observer pattern.
+# Page 96: Observer pattern start of chapter.
 
-class Employee
-  attr_reader :name
-  attr_accessor :title, :salary
 
-  def initialize(name, title, salary)
-    @name = name
-    @title = title
-    @salary = salary
+# p. 102
+module Subject
+  def initialize
     @observers = []
-  end
-
-  def salary=(new_salary)
-    @salary = new_salary
-    notify_observers
-  end
-
-  def notify_observers
-    @observers.each do |observer|
-      observer.update(self)
-    end
   end
 
   def add_observer(observer)
@@ -34,6 +19,32 @@ class Employee
   def delete_observer(observer)
     @observers.delete(observer)
   end
+
+  def notify_observers
+    @observers.each do |observer|
+      observer.update(self)
+    end
+  end
+end
+
+class Employee
+  include Subject
+
+  attr_reader :name
+  attr_accessor :title, :salary
+
+  def initialize(name, title, salary)
+    super()
+    @name = name
+    @title = title
+    @salary = salary
+  end
+
+  def salary=(new_salary)
+    @salary = new_salary
+    notify_observers
+  end
+
 end
 
 class Payroll
@@ -69,6 +80,16 @@ RSpec.describe Employee do
         fred.add_observer(payroll)
         expect(payroll).to receive(:update).with(fred)
         fred.salary = 35_000.0
+      end
+
+      example 'fred gets a tax bill' do
+        payroll = Payroll.new
+        taxbill = TaxMan.new
+        fred.add_observer(payroll)
+        fred.add_observer(taxbill)
+        expect(payroll).to receive(:update).with(fred)
+        expect(taxbill).to receive(:update).with(fred)
+        fred.salary = 90_000.0
       end
     end
   end
