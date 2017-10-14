@@ -20,15 +20,20 @@ module Subject
     @observers.delete(observer)
   end
 
-  def notify_observers
+  def notify_observers(_self) # api compatibility
     @observers.each do |observer|
       observer.update(self)
     end
   end
+
+  def changed # for api compatibility with Observable
+  end
 end
 
 class Employee
-  include Subject
+  # include Subject
+  require 'observer'
+  include Observable
 
   attr_reader :name
   attr_accessor :title, :salary
@@ -42,7 +47,8 @@ class Employee
 
   def salary=(new_salary)
     @salary = new_salary
-    notify_observers
+    changed
+    notify_observers(self)
   end
 
 end
