@@ -22,6 +22,7 @@ module Subject
 
   def notify_observers(_self) # api compatibility
     @observers.each do |observer|
+      # observer.call(self)
       observer.update(self)
     end
   end
@@ -31,9 +32,9 @@ module Subject
 end
 
 class Employee
-  # include Subject
-  require 'observer'
-  include Observable
+  include Subject
+  # require 'observer'
+  # include Observable
 
   attr_reader :name
   attr_accessor :title, :salary
@@ -96,6 +97,19 @@ RSpec.describe Employee do
         expect(payroll).to receive(:update).with(fred)
         expect(taxbill).to receive(:update).with(fred)
         fred.salary = 90_000.0
+      end
+    end
+
+    describe '#notify_observers' do
+      context 'pass a block' do
+        xit 'receives a block' do
+          payroll = Payroll.new
+          fred.add_observer do |employee|
+            payroll.update(employee)
+          end
+          expect(payroll).to receive(:update).with(fred)
+          fred.salary = 35_000.0
+        end
       end
     end
   end
