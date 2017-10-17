@@ -5,6 +5,11 @@ require 'pry'
 
 # Page 96: Observer pattern start of chapter.
 
+# Page 110, chapter concludes with some notes on the
+# differences between observer, strategy and template
+# methods for moving execution around. SAX parsing is
+# provided as an example of an Observer pattern
+# implementation.
 
 # p. 102
 module Subject
@@ -47,6 +52,7 @@ class Employee
   end
 
   def salary=(new_salary)
+    return if @salary == new_salary
     @salary = new_salary
     changed
     notify_observers(self)
@@ -87,6 +93,13 @@ RSpec.describe Employee do
         fred.add_observer(payroll)
         expect(payroll).to receive(:update).with(fred)
         fred.salary = 35_000.0
+      end
+
+      example 'fred does not get a raise' do
+        payroll = Payroll.new
+        fred.add_observer(payroll)
+        expect(payroll).not_to receive(:update).with(fred)
+        fred.salary = 30_000.0
       end
 
       example 'fred gets a tax bill' do
