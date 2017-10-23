@@ -2,6 +2,17 @@
 
 require 'rspec/autorun'
 
+# p. 111 Composite Task
+#
+# The interesting thing about this chapter and pattern
+# is the author builds a tree structure explicitly, noting
+# and enforcing different behavior (methods) between the
+# leaf nodes ("Task") and internal nodes ("CompositeTasks").
+#
+# Is this is a good idea? Why not use a tree container for
+# instead? The Tree container can also be used to demonstrate
+# composition.
+
 class Task
   attr_reader :name
 
@@ -24,6 +35,12 @@ class AddDryIngredientsTask < Task
   end
 end
 
+class AddLiquidsTask
+  def get_time_required
+    0.0
+  end
+end
+
 class MixTask < Task
   def initialize
     super('mix ingredients')
@@ -34,30 +51,10 @@ class MixTask < Task
   end
 end
 
-class MakeBatterTask < Task
-  def initialize
-    super('make batter')
-    @sub_tasks = []
-    add_sub_task(AddDryIngredientsTask.new)
-    # add_sub_task(AddLiquidsTask.new)
-    add_sub_task(MixTask.new)
-  end
-
-  def add_sub_task(task)
-    @sub_tasks << task
-  end
-
-  def delete_sub_task(task)
-    @sub_tasks.delete(task)
-  end
-
-  def get_time_required
-    @sub_tasks.sum(&:get_time_required)
-  end
-end
-
 class CompositeTask < Task
-  def initiliaze(name)
+  attr_accessor :sub_tasks
+
+  def initialize(name)
     super(name)
     @sub_tasks = []
   end
@@ -70,15 +67,52 @@ class CompositeTask < Task
     @sub_tasks.delete(task)
   end
 
+  def <<(task)
+    @sub_tasks << task
+  end
+
   def get_time_required
     @sub_tasks.sum(&:get_time_required)
   end
 end
 
+class MakeBatterTask < CompositeTask
+  def initialize
+    super('make batter')
+    add_sub_task(AddDryIngredientsTask.new)
+    add_sub_task(AddLiquidsTask.new)
+    add_sub_task(MixTask.new)
+  end
+end
+
 RSpec.describe MakeBatterTask do
-  describe 'get_time_required' do
-    it 'sums batter making tasks' do
-      expect(MakeBatterTask.new.get_time_required).to eq 4.0
+  context 'adding tasks with explicit method' do
+    describe 'get_time_required' do
+      it 'sums batter making tasks' do
+        expect(MakeBatterTask.new.get_time_required).to eq 4.0
+      end
+    end
+  end
+
+  context 'adding tasks with shovel' do
+    describe '#get_time_required' do
+      it 'sums batter making tasks'
+    end
+  end
+end
+
+require 'pry'
+
+RSpec.describe CompositeTask do
+  context 'adding tasks with shovel' do
+    describe '<<' do
+      it 'sums batter making tasks' do
+        task = CompositeTask.new('make batter')
+        task << AddDryIngredientsTask.new
+        task << AddLiquidsTask.new
+        task << MixTask.new
+        expect(task.get_time_required).to eq 4.0
+      end
     end
   end
 end
