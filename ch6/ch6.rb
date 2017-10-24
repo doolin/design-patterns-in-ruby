@@ -71,6 +71,10 @@ class CompositeTask < Task
     @sub_tasks << task
   end
 
+  def [](index)
+    @sub_tasks[index]
+  end
+
   def get_time_required
     @sub_tasks.sum(&:get_time_required)
   end
@@ -94,9 +98,9 @@ RSpec.describe MakeBatterTask do
     end
   end
 
-  context 'adding tasks with shovel' do
-    describe '#get_time_required' do
-      it 'sums batter making tasks'
+  describe '[]' do
+    it 'accesses' do
+      expect(MakeBatterTask.new[0].class).to eq AddDryIngredientsTask
     end
   end
 end
