@@ -12,16 +12,27 @@ require 'rspec/autorun'
 # Is this is a good idea? Why not use a tree container for
 # instead? The Tree container can also be used to demonstrate
 # composition.
+#
+# Also, the discussion implies that the leaf node will be
+# invariant, that is, it will never have a child. This
+# may be true for many sorts of composites, but for tasks
+# used in this example, it's almost always possible to further
+# subdivide any particular task.
 
 class Task
-  attr_reader :name
+  attr_accessor :name, :parent
 
   def initialize(name)
     @name = name
+    @parent = nil
   end
 
   def get_time_required
     0.0
+  end
+
+  def total_number_of_basic_tasks
+    1
   end
 end
 
@@ -35,7 +46,11 @@ class AddDryIngredientsTask < Task
   end
 end
 
-class AddLiquidsTask
+class AddLiquidsTask < Task
+  def initialize
+    super('add liquids')
+  end
+
   def get_time_required
     0.0
   end
@@ -61,10 +76,12 @@ class CompositeTask < Task
 
   def add_sub_task(task)
     @sub_tasks << task
+    task.parent = self
   end
 
   def remove_sub_task(task)
     @sub_tasks.delete(task)
+    task.parent = nil
   end
 
   def <<(task)
@@ -77,6 +94,10 @@ class CompositeTask < Task
 
   def get_time_required
     @sub_tasks.sum(&:get_time_required)
+  end
+
+  def total_number_of_basic_tasks
+    @sub_tasks.sum(&:total_number_of_basic_tasks)
   end
 end
 
@@ -117,6 +138,16 @@ RSpec.describe CompositeTask do
         task << MixTask.new
         expect(task.get_time_required).to eq 4.0
       end
+    end
+  end
+
+  describe '#total_number_of_basic_tasks' do
+    it 'sums all the basic tasks' do
+      task = CompositeTask.new('make batter')
+      task << AddDryIngredientsTask.new
+      task << AddLiquidsTask.new
+      task << MixTask.new
+      expect(task.total_number_of_basic_tasks).to eq 3
     end
   end
 end
