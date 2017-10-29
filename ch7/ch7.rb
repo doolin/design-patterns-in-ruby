@@ -15,6 +15,7 @@ require 'rspec/autorun'
 # Also worth remembering part of why I'm working through
 # the material is to baseline myself.
 
+# External iterator
 class ArrayIterator
   def initialize(array)
     @array = array
@@ -38,8 +39,13 @@ end
 
 RSpec.describe ArrayIterator do
   describe '.new' do
-    xit 'instantiates' do
-      array = [1, 2, 3]
+    it 'instantiates' do
+      array = ['red', 'green', 'blue']
+      iter = described_class.new(array)
+      expect(iter.next_item).to eq 'red'
+      expect(iter.next_item).to eq 'green'
+      expect(iter.next_item).to eq 'blue'
+      expect(iter.next_item).to be nil
     end
   end
 end
