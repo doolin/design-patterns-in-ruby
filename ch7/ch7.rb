@@ -37,9 +37,18 @@ class ArrayIterator
   end
 end
 
+# Internal iterator
+def for_each_element(array)
+  i = 0
+  while i < array.length
+    yield(array[i])
+    i += 1
+  end
+end
+
 RSpec.describe ArrayIterator do
-  describe '.new' do
-    it 'instantiates' do
+  describe '#has_next' do
+    it 'iterates' do
       array = ['red', 'green', 'blue']
       iter = described_class.new(array)
       expect(iter.next_item).to eq 'red'
@@ -49,3 +58,7 @@ RSpec.describe ArrayIterator do
     end
   end
 end
+
+# Some discussion about internal and external iterators follows.
+# Ruby has external iterators available as calls to `each` without
+# a block return the iterator itself.
