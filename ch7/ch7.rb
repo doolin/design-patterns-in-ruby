@@ -84,7 +84,14 @@ def merge(array1, array2)
   while iterator2.has_next?
     merged << iterator2.next_item
   end
+
+  merged
 end
 
 RSpec.describe 'merge array' do
+  it 'merges sorted arrays' do
+    a1 = [1, 3, 5, 7, 9]
+    a2 = [2, 4, 6, 8, 10]
+    expect(merge(a1, a2)).to eq((1..10).to_a)
+  end
 end
