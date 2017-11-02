@@ -95,3 +95,21 @@ RSpec.describe 'merge array' do
     expect(merge(a1, a2)).to eq((1..10).to_a)
   end
 end
+
+# p. 133, a bit of Ruby review, stuff I have done
+# in the past but isn't at the top of head always.
+# It's good to write a bit of code this way once
+# in a while.
+RSpec.describe Enumerable do
+  describe '#all?' do
+    it 'finds an execption' do
+      expect(['joe', 'sam', 'george'].all? { |e| e.length < 4 }).to be false
+    end
+  end
+
+  describe '#any?' do
+    it 'finds an execption' do
+      expect(['joe', 'sam', 'george'].any? { |e| e.length < 4 }).to be true
+    end
+  end
+end
