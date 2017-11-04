@@ -144,4 +144,20 @@ class Portfolio
 end
 
 RSpec.describe Account do
+  describe '#<=>' do
+    it 'compares correctly' do
+      a1 = Account.new('foo', 1)
+      a2 = Account.new('bar', 2)
+      a3 = Account.new('baz', 1)
+
+      aggregate_failures do
+        expect(a1 <=> a2).to eq(-1)
+        expect(a2 <=> a1).to eq(1)
+        expect(a3 <=> a1).to eq(0)
+      end
+    end
+  end
+end
+
+RSpec.describe Portfolio do
 end
