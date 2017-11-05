@@ -160,4 +160,34 @@ RSpec.describe Account do
 end
 
 RSpec.describe Portfolio do
+  let!(:portfolio) { Portfolio.new }
+
+  before do
+    portfolio.add_account(Account.new('foo', 10))
+    portfolio.add_account(Account.new('bar', 100))
+  end
+
+  describe '#any?' do
+    it 'does not find large value account' do
+      expect(portfolio.any? { |a| a.balance > 1000 }).to be false
+    end
+
+    it 'finds small accounts' do
+      expect(portfolio.any? { |a| a.balance < 1000 }).to be true
+    end
+  end
+
+  describe '#all?' do
+    it 'asserts all accounts larger than 0 balance' do
+      expect(portfolio.all? { |a| a.balance > 0 }).to be true
+    end
+
+    it 'finds small value account' do
+      expect(portfolio.all? { |a| a.balance < 1000 }).to be true
+    end
+
+    it 'has accounts greater than 100' do
+      expect(portfolio.all? { |a| a.balance < 100 }).to be false
+    end
+  end
 end
