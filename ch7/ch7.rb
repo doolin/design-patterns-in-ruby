@@ -191,3 +191,18 @@ RSpec.describe Portfolio do
     end
   end
 end
+
+RSpec.describe Array do
+  describe '#each' do
+    it 'deletes element' do
+      array = ['red', 'green', 'blue', 'purple']
+      result = []
+      array.each do |e|
+        result << e
+        array.delete(e) if e == 'green'
+      end
+      expect(result).to eq ['red', 'green', 'purple']
+      expect(array).to eq ['red', 'blue', 'purple']
+    end
+  end
+end
