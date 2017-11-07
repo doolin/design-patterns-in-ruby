@@ -206,3 +206,17 @@ RSpec.describe Array do
     end
   end
 end
+
+# p. 137 some practice code for hash keys and values.
+# This is boring, and hard to think of any clean way
+# to test. I'm leaving it in for now, will figure it
+# at some point.
+RSpec.describe Hash do
+  describe '#each_key' do
+    xit 'gets the keys' do
+      h = {'name'=>'russ', 'eyes'=>'blue', 'sex'=>'male'}
+      h.each_key { |key| key.capitalize }
+    end
+  end
+
+end
