@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rspec/autorun'
+require 'ap'
 
 # The iterator pattern allows processing objects
 # sequentially without exposing its internals.
@@ -218,5 +219,26 @@ RSpec.describe Hash do
       h.each_key { |key| key.capitalize }
     end
   end
+end
 
+RSpec.describe ObjectSpace do
+  describe '#each_object' do
+    context 'Numeric' do
+      # This doesn't pass, the actual numbers vary, something to dig
+      # into later.
+      it 'prints Numeric' do
+        expected = [
+          Float::INFINITY,
+          (0+1i),
+          9223372036854775807,
+          240478865962691961976764386300537282891,
+          Float::NAN,
+          1.7976931348623157e+308,
+          2.2250738585072014e-308
+        ]
+        numerics = ObjectSpace.each_object(Numeric).to_a # .uniq
+        expect(numerics).to contain_exactly(*expected)
+      end
+    end
+  end
 end
