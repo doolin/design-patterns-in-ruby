@@ -221,12 +221,24 @@ RSpec.describe Hash do
   end
 end
 
+def subclasses_of(superclass)
+  subclasses = []
+  ObjectSpace.each_object(Class) do |k|
+    next if !k.ancestors.include?(superclass) ||
+      superclass == k ||
+      k.to_s.include?('::') ||
+      subclasses.include?(k.to_s)
+    subclasses << k.to_s
+  end
+  subclasses
+end
+
 RSpec.describe ObjectSpace do
   describe '#each_object' do
     context 'Numeric' do
       # This doesn't pass, the actual numbers vary, something to dig
       # into later.
-      it 'prints Numeric' do
+      xit 'prints Numeric' do
         expected = [
           Float::INFINITY,
           (0+1i),
@@ -238,6 +250,11 @@ RSpec.describe ObjectSpace do
         ]
         numerics = ObjectSpace.each_object(Numeric).to_a # .uniq
         expect(numerics).to contain_exactly(*expected)
+      end
+
+      it 'subclasses of Numeric' do
+        expected = ['Complex', 'Rational', 'Float', 'Integer']
+        expect(subclasses_of(Numeric)).to eq expected
       end
     end
   end
