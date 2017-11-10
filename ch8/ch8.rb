@@ -1,12 +1,16 @@
 #!/usr/bin/env ruby
 
 require 'rspec/autorun'
+require 'pry'
 
 # p. 144 Command Pattern
 #
 # I'm not sure I'm familiar with the Command Pattern,
 # so this will be an interesting chapter.
 
+
+# I'm leaving this here and the spec below as an example
+# for future reference and investigation.
 class SlickButton
 end
 
@@ -27,6 +31,11 @@ end
 # it doesn't work as rspec reads all the classes before
 # applying the specs. This means the first class definition
 # is overridden by the second class definition.
+#
+# The idead behind this pattern is that the passed in
+# command object requires maintaining a certain amount
+# of state. Otherwise, as demonstrated further down, it
+# could be defined to accept a block on initialization.
 class SlickButton
   attr_accessor :command
 
@@ -43,6 +52,10 @@ class SaveCommand
   def execute
     :saved
   end
+
+  def executor
+    method(:execute)
+  end
 end
 
 RSpec.describe SlickButton do
@@ -58,4 +71,76 @@ RSpec.describe SlickButton do
       expect(saved).to be :saved
     end
   end
+end
+
+# If we don't need a lot of state information with respect
+# to the command(s) using the "SlickButton," pass in a block
+# to do the work.
+class SlickButtonBlock
+  attr_accessor :command
+
+  def initialize(&callback)
+    @command = callback
+  end
+
+  def on_button_push
+    @command.call if @command # @command&.execute
+  end
+end
+
+RSpec.describe SlickButtonBlock do
+  describe '#on_button_push' do
+    it 'executes' do
+      sb = SlickButtonBlock.new { :saved }
+      expect(sb.on_button_push).to be :saved
+    end
+  end
+end
+
+# for testing
+class SubClassError < StandardError; end
+
+class Command
+  attr_reader :description
+
+  def initialize(description)
+    @description = description
+  end
+
+  def execute
+    raise SubClassError
+  end
+end
+
+RSpec.describe Command do
+  describe '#execute' do
+    it 'raises' do
+      expect {
+        Command.new('description').execute
+      }.to raise_error SubClassError
+    end
+  end
+end
+
+class CreateFile < Command
+  def initialize(path, contents)
+    super("CreateFile: #{path}")
+    @path = path
+    @contents = contents
+  end
+
+  def execute
+    f = File.open(@path, 'w')
+    f.write(@contents)
+    f.close
+  end
+end
+
+RSpec.describe CreateFile do
+end
+
+class DeleteFile
+end
+
+class CopyFile
 end
