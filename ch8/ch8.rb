@@ -137,10 +137,53 @@ class CreateFile < Command
 end
 
 RSpec.describe CreateFile do
+  describe '#execute' do
+    it 'writes a file to /tmp' do
+      path = '/tmp/testem.txt'
+      contents = 'quux'
+      CreateFile.new(path, contents).execute
+      File.readlines(path).each do |line|
+        expect(line).to eq 'quux'
+      end
+    end
+  end
 end
 
-class DeleteFile
+class DeleteFile < Command
+  def initialize(path)
+    super("DeleteFile: #{path}")
+    @path = path
+  end
+
+  def execute
+    File.delete(@path)
+  end
 end
 
-class CopyFile
+RSpec.describe DeleteFile do
+  describe '#execute' do
+  end
+end
+
+class CopyFile < Command
+  def initialize(source, target)
+    super("CopyFile: #{source} to #{target}")
+    @source = source
+    @target = target
+  end
+
+  def execute
+    FileUtils.copy(@source, @target)
+  end
+end
+
+RSpec.describe CopyFile do
+  describe '#execute' do
+  end
+end
+
+class CompositeCommand < Command
+  def initialize
+    @commands = []
+  end
 end
