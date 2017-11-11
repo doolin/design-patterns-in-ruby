@@ -136,11 +136,17 @@ class CreateFile < Command
   end
 end
 
+def path
+  '/tmp/testem.txt'
+end
+
+def contents
+  'quux'
+end
+
 RSpec.describe CreateFile do
   describe '#execute' do
     it 'writes a file to /tmp' do
-      path = '/tmp/testem.txt'
-      contents = 'quux'
       CreateFile.new(path, contents).execute
       File.readlines(path).each do |line|
         expect(line).to eq 'quux'
@@ -162,7 +168,17 @@ end
 
 RSpec.describe DeleteFile do
   describe '#execute' do
+    example 'deletes' do
+      CreateFile.new(path, contents).execute
+      expect(File.exists?(path)).to be true
+      DeleteFile.new(path).execute
+      expect(File.exists?(path)).to be false
+    end
   end
+end
+
+def target
+  '/tmp/testem2.txt'
 end
 
 class CopyFile < Command
@@ -179,11 +195,38 @@ end
 
 RSpec.describe CopyFile do
   describe '#execute' do
+    example 'copy' do
+      CreateFile.new(path, contents).execute
+      expect(File.exists?(path)).to be true
+      CopyFile.new(path, target).execute
+      expect(File.exists?(target)).to be true
+      DeleteFile.new(path).execute
+      DeleteFile.new(target).execute
+    end
   end
 end
 
 class CompositeCommand < Command
   def initialize
     @commands = []
+  end
+
+  def add_command(command)
+    @commands << command
+  end
+
+  def execute
+    @command.each { |command| command.execute }
+  end
+
+  def description
+    description = ''
+    @commands.each { |command| description << command.description }
+  end
+end
+
+RSpec.describe CompositeCommand do
+  describe '#execute' do
+    example 'create and delete a file'
   end
 end
