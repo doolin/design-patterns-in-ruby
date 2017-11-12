@@ -134,6 +134,10 @@ class CreateFile < Command
     f.write(@contents)
     f.close
   end
+
+  def unexecute
+    File.delete(@path)
+  end
 end
 
 def path
@@ -162,17 +166,29 @@ class DeleteFile < Command
   end
 
   def execute
+    # return unless File.exists?(@path)
+    @contents = File.read(@path) if File.exists?(@path)
     File.delete(@path)
+  end
+
+  def unexecute
+    CreateFile.new(@path, @contents).execute if @contents
   end
 end
 
 RSpec.describe DeleteFile do
   describe '#execute' do
-    example 'deletes' do
-      CreateFile.new(path, contents).execute
-      expect(File.exists?(path)).to be true
-      DeleteFile.new(path).execute
-      expect(File.exists?(path)).to be false
+    context 'file exists' do
+      example 'deletes' do
+        CreateFile.new(path, contents).execute
+        expect(File.exists?(path)).to be true
+        DeleteFile.new(path).execute
+        expect(File.exists?(path)).to be false
+      end
+    end
+
+    context 'file does not exist' do
+      it 'fails or something'
     end
   end
 end
@@ -219,6 +235,10 @@ class CompositeCommand < Command
     @commands.each { |command| command.execute }
   end
 
+  def unexecute
+    @commands.reverse.each { |command| command.unexecute }
+  end
+
   def description
     description = ''
     @commands.each { |command| description << command.description }
@@ -226,6 +246,8 @@ class CompositeCommand < Command
 end
 
 RSpec.describe CompositeCommand do
+  subject(:commands) { CompositeCommand.new }
+
   describe '#execute' do
     example 'create and delete a file' do
       commands = CompositeCommand.new
@@ -237,6 +259,36 @@ RSpec.describe CompositeCommand do
       expect(commands.description.size).to eq 2
       DeleteFile.new(path).execute
       DeleteFile.new(target).execute
+    end
+  end
+
+  describe '#unexecute' do
+    example 'reverse CreateFile' do
+      commands.add_command(CreateFile.new(path, contents))
+      commands.execute
+      expect(File.exists?(path)).to be true
+      commands.unexecute
+      expect(File.exists?(path)).to be false
+    end
+
+    example 'reverse DeleteFile' do
+      CreateFile.new(path, contents).execute
+      commands.add_command(DeleteFile.new(path))
+      commands.execute
+      expect(File.exists?(path)).to be false
+      commands.unexecute
+      expect(File.exists?(path)).to be true
+      commands.execute
+    end
+
+    example 'reverses commands' do
+      commands = CompositeCommand.new
+      commands.add_command(CreateFile.new(path, contents))
+      commands.add_command(DeleteFile.new(path))
+      commands.execute
+      expect(File.exists?(path)).to be false
+      commands.unexecute
+      expect(File.exists?(path)).to be false
     end
   end
 end
