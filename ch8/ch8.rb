@@ -216,7 +216,7 @@ class CompositeCommand < Command
   end
 
   def execute
-    @command.each { |command| command.execute }
+    @commands.each { |command| command.execute }
   end
 
   def description
@@ -227,6 +227,16 @@ end
 
 RSpec.describe CompositeCommand do
   describe '#execute' do
-    example 'create and delete a file'
+    example 'create and delete a file' do
+      commands = CompositeCommand.new
+      commands.add_command(CreateFile.new(path, contents))
+      commands.add_command(CopyFile.new(path, target))
+      commands.execute
+      expect(File.exists?(path)).to be true
+      expect(File.exists?(target)).to be true
+      expect(commands.description.size).to eq 2
+      DeleteFile.new(path).execute
+      DeleteFile.new(target).execute
+    end
   end
 end
