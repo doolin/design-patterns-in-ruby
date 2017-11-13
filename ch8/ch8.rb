@@ -292,3 +292,87 @@ RSpec.describe CompositeCommand do
     end
   end
 end
+
+require 'madeleine'
+
+class Employee
+  attr_accessor   :name, :number, :address
+
+  def initialize(name, number, address)
+    @name = name
+    @number = number
+    @address = address
+  end
+
+  def to_s
+    "Employee: name: #{name} num: #{number} addr: #{address}"
+  end
+end
+
+RSpec.describe Employee do
+  describe '#to_s' do
+    it 'serializes' do
+      name = 'foo'
+      number = 1001
+      address = '123 bar st, quux AK 99999'
+      expected = "Employee: name: #{name} num: #{number} addr: #{address}"
+      actual = Employee.new(name, number, address).to_s
+      expect(actual).to eq expected
+    end
+  end
+end
+
+class EmployeeManager
+  def initialize
+    @employees = {}
+  end
+
+  def add_employee(e)
+    @employees[e.number] = e
+  end
+
+  def change_address(number, address)
+    employee = @employees[number]
+    raise "No such employess" if employee.nil?
+    employee.address = address
+  end
+
+  def delete_employee(number)
+    @employees.remove(number)
+  end
+
+  def find_employee(number)
+    @employees[number]
+  end
+end
+
+RSpec.describe EmployeeManager do
+end
+
+class AddEmployee
+  def initialize(employee)
+    @employee = employee
+  end
+
+  def execute(system)
+    system.add_employee(@employee)
+  end
+end
+
+RSpec.describe AddEmployee do
+end
+
+class DeleteEmployee
+  def initialize(number)
+    @number = number
+  end
+
+  def execute(system)
+    system.delete_employee(number)
+  end
+end
+
+RSpec.describe DeleteEmployee do
+end
+
+store = SnapshotMadeleine.new('employees') { EmployeeManager.new }
