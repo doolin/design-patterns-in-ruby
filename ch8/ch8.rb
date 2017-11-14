@@ -337,8 +337,9 @@ class EmployeeManager
     employee.address = address
   end
 
+  # Note: `remove method replaced by delete method`
   def delete_employee(number)
-    @employees.remove(number)
+    @employees.delete(number)
   end
 
   def find_employee(number)
@@ -347,6 +348,26 @@ class EmployeeManager
 end
 
 RSpec.describe EmployeeManager do
+  let(:name) { 'foo' }
+  let(:number) { 1001 }
+  let(:address) { '123 bar st, quux AK 99999' }
+
+  describe 'adding, finding and deleting' do
+    it '' do
+      employee = Employee.new(name, number, address)
+      em = EmployeeManager.new
+      em.add_employee(employee)
+      aggregate_failures do
+        expect(em.find_employee(number)).to eq employee
+        expect(em.delete_employee(number)).to eq employee
+        expect(em.find_employee(number)).to eq nil
+      end
+    end
+  end
+
+  describe '#change_address' do
+    it 'changes address'
+  end
 end
 
 class AddEmployee
