@@ -380,7 +380,27 @@ class AddEmployee
   end
 end
 
+store = SnapshotMadeleine.new('employees') { EmployeeManager.new }
+
+def file_count
+  dir = "#{Dir.pwd}/employees"
+  Dir[File.join(dir, '**', '*')].count # { |file| File.file?(file) }
+end
+
 RSpec.describe AddEmployee do
+  let(:name) { 'foo' }
+  let(:number) { 1001 }
+  let(:address) { '123 bar st, quux AK 99999' }
+
+  describe '#execute' do
+    it 'persists' do
+      ae = AddEmployee.new(Employee.new(name, number, address))
+      count = file_count
+      # binding.pry
+      store.execute_command(ae)
+      expect(file_count).to eq count + 1
+    end
+  end
 end
 
 class DeleteEmployee
@@ -396,4 +416,4 @@ end
 RSpec.describe DeleteEmployee do
 end
 
-store = SnapshotMadeleine.new('employees') { EmployeeManager.new }
+# TODO: delete the madeleine stuff at the end.
