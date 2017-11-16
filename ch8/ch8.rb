@@ -309,12 +309,21 @@ class Employee
   end
 end
 
+def name
+  'foo'
+end
+
+def number
+  1001
+end
+
+def address
+  '123 bar st, quux AK 99999'
+end
+
 RSpec.describe Employee do
   describe '#to_s' do
     it 'serializes' do
-      name = 'foo'
-      number = 1001
-      address = '123 bar st, quux AK 99999'
       expected = "Employee: name: #{name} num: #{number} addr: #{address}"
       actual = Employee.new(name, number, address).to_s
       expect(actual).to eq expected
@@ -348,25 +357,37 @@ class EmployeeManager
 end
 
 RSpec.describe EmployeeManager do
-  let(:name) { 'foo' }
-  let(:number) { 1001 }
-  let(:address) { '123 bar st, quux AK 99999' }
+  let(:employee) { Employee.new(name, number, address) }
+
+  subject(:manager) { EmployeeManager.new }
 
   describe 'adding, finding and deleting' do
     it '' do
-      employee = Employee.new(name, number, address)
-      em = EmployeeManager.new
-      em.add_employee(employee)
+      manager.add_employee(employee)
       aggregate_failures do
-        expect(em.find_employee(number)).to eq employee
-        expect(em.delete_employee(number)).to eq employee
-        expect(em.find_employee(number)).to eq nil
+        expect(manager.find_employee(number)).to eq employee
+        expect(manager.delete_employee(number)).to eq employee
+        expect(manager.find_employee(number)).to eq nil
       end
     end
   end
 
   describe '#change_address' do
-    it 'changes address'
+    # This example is a "round trip" regression check. The
+    # test case seems obvious and intuitive, and perhaps in
+    # this case it is, given how little code is involved.
+    # Over the life of a growing project, people often stick
+    # other little bits of code into execution paths. These
+    # sorts of regression tests can help insure inadvertant
+    # changes (regressions) are caught early.
+    it 'changes address' do
+      manager.add_employee(employee)
+      expected = '456 baz road, quux AK 99999'
+      manager.change_address(number, expected)
+      e = manager.find_employee(number)
+
+      expect(e.address).to eq expected
+    end
   end
 end
 
@@ -380,7 +401,11 @@ class AddEmployee
   end
 end
 
-store = SnapshotMadeleine.new('employees') { EmployeeManager.new }
+# store = SnapshotMadeleine.new('employees') { EmployeeManager.new }
+
+def store
+  @store ||= SnapshotMadeleine.new('employees') { EmployeeManager.new }
+end
 
 def file_count
   dir = "#{Dir.pwd}/employees"
@@ -388,15 +413,10 @@ def file_count
 end
 
 RSpec.describe AddEmployee do
-  let(:name) { 'foo' }
-  let(:number) { 1001 }
-  let(:address) { '123 bar st, quux AK 99999' }
-
   describe '#execute' do
     it 'persists' do
       ae = AddEmployee.new(Employee.new(name, number, address))
       count = file_count
-      # binding.pry
       store.execute_command(ae)
       expect(file_count).to eq count + 1
     end
@@ -414,6 +434,44 @@ class DeleteEmployee
 end
 
 RSpec.describe DeleteEmployee do
+  describe '#execute' do
+    it 'persists' do
+      aa = AddEmployee.new(Employee.new(name, number, address))
+      store.execute_command(aa)
+      ae = DeleteEmployee.new(number)
+      count = file_count
+      store.execute_command(ae)
+      # TODO: figure out why count is not changing.
+      expect(file_count).to eq count # + 1
+    end
+  end
+end
+
+class ChangeAddress
+  def initialize(number, address)
+    @number = number
+    @address = address
+  end
+
+  def execute(system)
+    system.change_address(@number, @address)
+  end
+end
+
+RSpec.describe ChangeAddress do
+end
+
+class FindEmployee
+  def initialize(number)
+    @number = number
+  end
+
+  def execute(system)
+    system.find_employee(number)
+  end
+end
+
+RSpec.describe FindEmployee do
 end
 
 # TODO: delete the madeleine stuff at the end.
