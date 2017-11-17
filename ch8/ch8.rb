@@ -436,11 +436,11 @@ end
 RSpec.describe DeleteEmployee do
   describe '#execute' do
     it 'persists' do
-      aa = AddEmployee.new(Employee.new(name, number, address))
-      store.execute_command(aa)
-      ae = DeleteEmployee.new(number)
-      count = file_count
+      ae = AddEmployee.new(Employee.new(name, number, address))
       store.execute_command(ae)
+      de = DeleteEmployee.new(number)
+      count = file_count
+      store.execute_command(de)
       # TODO: figure out why count is not changing.
       expect(file_count).to eq count # + 1
     end
@@ -459,6 +459,20 @@ class ChangeAddress
 end
 
 RSpec.describe ChangeAddress do
+  describe '#execute' do
+    it 'persists' do
+      employee = Employee.new(name, number, address)
+      ae = AddEmployee.new(employee)
+      store.execute_command(ae)
+      new_address = '456 baz way, quux AK, 99999'
+      ca = ChangeAddress.new(number, new_address)
+      count = file_count
+      store.execute_command(ca)
+      # TODO: figure out why count is not changing.
+      expect(file_count).to eq count # + 1
+      expect(employee.address).to eq new_address
+    end
+  end
 end
 
 class FindEmployee
