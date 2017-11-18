@@ -486,6 +486,23 @@ class FindEmployee
 end
 
 RSpec.describe FindEmployee do
+  describe '#execute' do
+    it 'persists' do
+      employee = Employee.new(name, number, address)
+      ae = AddEmployee.new(employee)
+      expect {
+        store.execute_command(ae)
+      }.to change { file_count }.by 1
+
+      found = store.execute_command(FindEmployee.new(number))
+      # typo in book
+      store.take_snapshot
+      expect(found).to eq employee
+    end
+  end
 end
 
-# TODO: delete the madeleine stuff at the end.
+# TODO: for whatever reason, this isn't working
+# at the time of writing, but it's too tedious to
+# think about right now.
+FileUtils.rm_rf('employees')
