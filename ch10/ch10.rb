@@ -174,4 +174,37 @@ class VirtualAccountProxy
 end
 
 RSpec.describe VirtualAccountProxy do
+  let(:amount) { 100 }
+  let(:account) { BankAccount.new(amount) }
+
+  subject(:proxy) { VirtualAccountProxy.new(amount) }
+
+  describe '#deposit' do
+    it 'calls proxy' do
+      expect(proxy).to receive(:subject).and_return(account)
+      proxy.deposit(100)
+    end
+  end
+
+  describe '#withdraw' do
+    it 'calls proxy' do
+      expect(proxy).to receive(:subject).and_return(account)
+      proxy.withdraw(50)
+    end
+  end
+
+  describe '#balance' do
+    it 'calls proxy' do
+      expect(proxy).to receive(:subject).and_return(account)
+      proxy.balance
+    end
+  end
+
+  describe '#subject' do
+    it 'memoizes'
+  end
+end
+
+# p. 186 proxy with method_missing
+class AccountProxy
 end
