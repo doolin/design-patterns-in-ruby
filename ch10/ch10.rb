@@ -207,4 +207,15 @@ end
 
 # p. 186 proxy with method_missing
 class AccountProxy
+  def initialize(real_account)
+    @subject = real_account
+  end
+
+  def method_missing(name, *args)
+    @subject.send(name, *args)
+    "Delegating #{name} message to subject"
+  end
+end
+
+RSpec.describe AccountProxy do
 end
