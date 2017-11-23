@@ -212,10 +212,25 @@ class AccountProxy
   end
 
   def method_missing(name, *args)
-    @subject.send(name, *args)
     "Delegating #{name} message to subject"
+    @subject.send(name, *args)
   end
 end
 
 RSpec.describe AccountProxy do
+  let(:amount) { 100 }
+
+  subject(:proxy) { AccountProxy.new(BankAccount.new(amount)) }
+
+  describe '#method_missing' do
+    it 'delegates to known method' do
+      expect(proxy.balance).to eq amount
+    end
+
+    it 'raises when unknown method' do
+      expect {
+        proxy.foobar
+      }.to raise_error(NoMethodError)
+    end
+  end
 end
