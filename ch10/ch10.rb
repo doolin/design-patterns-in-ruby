@@ -173,6 +173,8 @@ class VirtualAccountProxy
   end
 end
 
+# TODO: Reimplement the following using a passed-in
+# callback for the bank account.
 RSpec.describe VirtualAccountProxy do
   let(:amount) { 100 }
   let(:account) { BankAccount.new(amount) }
@@ -231,6 +233,29 @@ RSpec.describe AccountProxy do
       expect {
         proxy.foobar
       }.to raise_error(NoMethodError)
+    end
+  end
+end
+
+class MathService
+  def add(a, b)
+    a + b
+  end
+end
+
+def uri
+  'druby://localhost:3030'
+end
+
+require 'drb/drb'
+DRb.start_service(uri, MathService.new)
+# DRb.thread.join
+
+RSpec.describe MathService do
+  describe '#add' do
+    it '' do
+      math_service = DRbObject.new_with_uri(uri)
+      expect(math_service.add(2,2)).to eq 4
     end
   end
 end
