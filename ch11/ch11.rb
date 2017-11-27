@@ -57,10 +57,30 @@ class NumberingWriter < WriterDecorator
   end
 
   def write_line(line)
-    @real_writer.write_line("#{line_number}: #{line}")
+    @real_writer.write_line("#{@line_number}: #{line}")
     @line_number += 1
   end
 end
 
 RSpec.describe NumberingWriter do
+  def path
+    '/tmp/final.txt'
+  end
+
+  def text
+    'Hello out there'
+  end
+
+  describe '#write_line' do
+    it '' do
+      writer = NumberingWriter.new(SimpleWriter.new(path))
+      writer.write_line(text)
+      # TODO: find out why closing a file truncates the last character
+      # when reading this file back in.
+      # writer.close
+      File.readlines(path, 'r').each do |line|
+        expect(line).to eq "1: #{text}"
+      end
+    end
+  end
 end
