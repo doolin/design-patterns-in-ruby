@@ -84,3 +84,30 @@ RSpec.describe NumberingWriter do
     end
   end
 end
+
+class CheckSummingWriter < WriterDecorator
+  attr_reader :checksum
+
+  def initialize(real_writer)
+    @real_writer = real_writer
+    @check_sum = 0
+  end
+
+  def write_line(line)
+    line.each_byte { |byte| @check_sum = (@check_sum + byte) % 256 }
+    @check_sum += "\n"[0] % 256
+    @real_writer.write_line(line)
+  end
+end
+
+RSpec.describe CheckSummingWriter do
+end
+
+class TimestampingWriter < WriterDecorator
+  def write_line(line)
+    @real_writer.write_line("#{Time.new}: #{line}")
+  end
+end
+
+RSpec.describe TimestampingWriter do
+end
