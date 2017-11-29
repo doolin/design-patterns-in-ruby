@@ -95,7 +95,7 @@ class CheckSummingWriter < WriterDecorator
 
   def write_line(line)
     line.each_byte { |byte| @check_sum = (@check_sum + byte) % 256 }
-    @check_sum += "\n"[0] % 256
+    @check_sum += "\n".bytes.first % 256
     @real_writer.write_line(line)
   end
 end
@@ -103,11 +103,15 @@ end
 RSpec.describe CheckSummingWriter do
 end
 
-class TimestampingWriter < WriterDecorator
+class TimeStampingWriter < WriterDecorator
   def write_line(line)
     @real_writer.write_line("#{Time.new}: #{line}")
   end
 end
 
-RSpec.describe TimestampingWriter do
+RSpec.describe TimeStampingWriter do
 end
+
+writer = CheckSummingWriter.new(TimeStampingWriter.new(
+               NumberingWriter.new(SimpleWriter.new('final.txt'))))
+writer.write_line('Hello out there')
