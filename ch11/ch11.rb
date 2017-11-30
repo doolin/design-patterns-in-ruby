@@ -115,3 +115,9 @@ end
 writer = CheckSummingWriter.new(TimeStampingWriter.new(
                NumberingWriter.new(SimpleWriter.new('final.txt'))))
 writer.write_line('Hello out there')
+
+module TimeStampingWriterModule # prevent collision with defined class
+  def write_line(line)
+    super("{Time.new}: #{line}")
+  end
+end
