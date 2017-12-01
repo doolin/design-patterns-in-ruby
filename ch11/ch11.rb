@@ -62,15 +62,15 @@ class NumberingWriter < WriterDecorator
   end
 end
 
+def path
+  '/tmp/final.txt'
+end
+
+def text
+  'Hello out there'
+end
+
 RSpec.describe NumberingWriter do
-  def path
-    '/tmp/final.txt'
-  end
-
-  def text
-    'Hello out there'
-  end
-
   describe '#write_line' do
     it '' do
       writer = NumberingWriter.new(SimpleWriter.new(path))
@@ -109,7 +109,20 @@ class TimeStampingWriter < WriterDecorator
   end
 end
 
+require 'timecop'
+
 RSpec.describe TimeStampingWriter do
+  describe '#write_line' do
+    it 'time stamps' do
+      writer = TimeStampingWriter.new(SimpleWriter.new(path))
+      Timecop.freeze(timenow = DateTime.new(2017, 12, 1)) do
+        writer.write_line(text)
+        File.readlines(path, 'r').each do |line|
+          expect(line).to eq "#{timenow}: #{text}"
+        end
+      end
+    end
+  end
 end
 
 writer = CheckSummingWriter.new(TimeStampingWriter.new(
