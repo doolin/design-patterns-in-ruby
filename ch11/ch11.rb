@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rspec/autorun'
+require 'pry'
 
 # Decorators
 
@@ -72,7 +73,7 @@ end
 
 RSpec.describe NumberingWriter do
   describe '#write_line' do
-    it '' do
+    it 'numbers' do
       writer = NumberingWriter.new(SimpleWriter.new(path))
       writer.write_line(text)
       # TODO: find out why closing a file truncates the last character
@@ -81,6 +82,7 @@ RSpec.describe NumberingWriter do
       File.readlines(path, 'r').each do |line|
         expect(line).to eq "1: #{text}"
       end
+      File.delete(path)
     end
   end
 end
@@ -101,6 +103,17 @@ class CheckSummingWriter < WriterDecorator
 end
 
 RSpec.describe CheckSummingWriter do
+  describe '#write_line' do
+    it 'checksums' do
+      writer = described_class.new(SimpleWriter.new(path))
+      writer.write_line(text)
+
+      File.readlines(path, 'r').each do |line|
+        expect(line).to eq text
+      end
+      File.delete(path)
+    end
+  end
 end
 
 class TimeStampingWriter < WriterDecorator
@@ -121,6 +134,7 @@ RSpec.describe TimeStampingWriter do
           expect(line).to eq "#{timenow}: #{text}"
         end
       end
+      File.delete(path)
     end
   end
 end
