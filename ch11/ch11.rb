@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'rspec/autorun'
 require 'pry'
@@ -76,11 +77,10 @@ RSpec.describe NumberingWriter do
     it 'numbers' do
       writer = NumberingWriter.new(SimpleWriter.new(path))
       writer.write_line(text)
-      # TODO: find out why closing a file truncates the last character
-      # when reading this file back in.
-      # writer.close
-      File.readlines(path, 'r').each do |line|
-        expect(line).to eq "1: #{text}"
+      writer.close
+
+      File.readlines(path).each do |line|
+        expect(line).to eq "1: #{text}\n"
       end
       File.delete(path)
     end
@@ -107,9 +107,10 @@ RSpec.describe CheckSummingWriter do
     it 'checksums' do
       writer = described_class.new(SimpleWriter.new(path))
       writer.write_line(text)
+      writer.close
 
-      File.readlines(path, 'r').each do |line|
-        expect(line).to eq text
+      File.readlines(path).each do |line|
+        expect(line).to eq text + "\n"
       end
       File.delete(path)
     end
@@ -130,8 +131,10 @@ RSpec.describe TimeStampingWriter do
       writer = TimeStampingWriter.new(SimpleWriter.new(path))
       Timecop.freeze(timenow = DateTime.new(2017, 12, 1)) do
         writer.write_line(text)
-        File.readlines(path, 'r').each do |line|
-          expect(line).to eq "#{timenow}: #{text}"
+        writer.close
+
+        File.readlines(path).each do |line|
+          expect(line).to eq "#{timenow}: #{text}\n"
         end
       end
       File.delete(path)
@@ -139,9 +142,22 @@ RSpec.describe TimeStampingWriter do
   end
 end
 
-writer = CheckSummingWriter.new(TimeStampingWriter.new(
-               NumberingWriter.new(SimpleWriter.new('final.txt'))))
-writer.write_line('Hello out there')
+RSpec.describe 'all the writers' do
+  it 'do everything' do
+    writer = CheckSummingWriter.new(TimeStampingWriter.new(
+                                      NumberingWriter.new(SimpleWriter.new(path))
+    ))
+    Timecop.freeze(timenow = DateTime.new(2017, 12, 1)) do
+      writer.write_line(text)
+      writer.close
+
+      File.readlines(path, 'r').each do |line|
+        expect(line).to eq "1. #{timenow}: #{text}"
+      end
+    end
+    File.delete(path)
+  end
+end
 
 module TimeStampingWriterModule # prevent collision with defined class
   def write_line(line)
