@@ -119,7 +119,10 @@ end
 
 class TimeStampingWriter < WriterDecorator
   def write_line(line)
-    @real_writer.write_line("#{Time.new}: #{line}")
+    # For the same instant in time, Time.new and DateTime.now
+    # produce a different time string.
+    # @real_writer.write_line("#{Time.new}: #{line}")
+    @real_writer.write_line("#{DateTime.now}: #{line}")
   end
 end
 
@@ -129,7 +132,8 @@ RSpec.describe TimeStampingWriter do
   describe '#write_line' do
     it 'time stamps' do
       writer = TimeStampingWriter.new(SimpleWriter.new(path))
-      Timecop.freeze(timenow = DateTime.new(2017, 12, 1)) do
+      timenow = DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
+      Timecop.freeze(timenow) do
         writer.write_line(text)
         writer.close
 
@@ -147,12 +151,13 @@ RSpec.describe 'all the writers' do
     writer = CheckSummingWriter.new(TimeStampingWriter.new(
                                       NumberingWriter.new(SimpleWriter.new(path))
     ))
-    Timecop.freeze(timenow = DateTime.new(2017, 12, 1)) do
+    timenow = DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
+    Timecop.freeze(timenow) do
       writer.write_line(text)
       writer.close
 
-      File.readlines(path, 'r').each do |line|
-        expect(line).to eq "1. #{timenow}: #{text}"
+      File.readlines(path).each do |line|
+        expect(line).to eq "1: #{timenow}: #{text}\n"
       end
     end
     File.delete(path)
