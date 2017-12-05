@@ -31,10 +31,17 @@ class SimpleWriter
 end
 
 class WriterDecorator
+  # p. 201
+  require 'forwardable'
+  extend Forwardable
+
+  def_delegators :@real_writer, :write_line, :rewind, :pos, :close
+
   def initialize(real_writer)
     @real_writer = real_writer
   end
 
+=begin
   def write_line(line)
     @real_writer.write_line(line)
   end
@@ -50,6 +57,7 @@ class WriterDecorator
   def close
     @real_writer.close
   end
+=end
 end
 
 class NumberingWriter < WriterDecorator
