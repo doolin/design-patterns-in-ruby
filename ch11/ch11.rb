@@ -172,8 +172,31 @@ RSpec.describe 'all the writers' do
   end
 end
 
+# Warning: ugly names a head, Ruby won't accept a
+# module named after same named class loaded.
 module TimeStampingWriterModule # prevent collision with defined class
   def write_line(line)
     super("{Time.new}: #{line}")
   end
+end
+
+module NumberingWriterModule
+  attr_reader :line_number
+
+  def write_line(line)
+    @line_number = 1 unless @line_number
+    super("#{@line_number}: #{line}")
+    @line_number += 1
+  end
+end
+
+# p. 203, don't recognize this construction, and it doesn't parse
+# as valid ruby:
+# class Writer
+#   define write(line)
+#     @f.write(line)
+#   end
+# end
+
+RSpec.describe 'extending modules on an object' do
 end
