@@ -176,7 +176,7 @@ end
 # module named after same named class loaded.
 module TimeStampingWriterModule # prevent collision with defined class
   def write_line(line)
-    super("{Time.new}: #{line}")
+    super("#{DateTime.now}: #{line}")
   end
 end
 
@@ -199,4 +199,38 @@ end
 # end
 
 RSpec.describe 'extending modules on an object' do
+  it 'SimpleWriter' do
+    w = SimpleWriter.new(path)
+    w.extend(NumberingWriterModule)
+    w.extend(TimeStampingWriterModule)
+
+    timenow = DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
+    Timecop.freeze(timenow) do
+      w.write_line(text)
+      w.close
+
+      File.readlines(path).each do |line|
+        expect(line).to eq "1: #{timenow}: #{text}\n"
+      end
+    end
+    File.delete(path)
+  end
+end
+
+# p. 202 method wrapping, which is here instead of before the modules
+# because of re-opening SimpleWriter
+
+RSpec.describe 're-open to alias' do
+  it '' do
+    w = SimpleWriter.new(path)
+    class << w
+      alias old_write_line write_line
+
+      def write_line(line)
+        old_write_line("#{DateTime.now}: #{line}")
+      end
+    end
+
+    # test it here
+  end
 end
