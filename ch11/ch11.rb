@@ -134,13 +134,16 @@ class TimeStampingWriter < WriterDecorator
   end
 end
 
+def timenow
+  DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
+end
+
 require 'timecop'
 
 RSpec.describe TimeStampingWriter do
   describe '#write_line' do
     it 'time stamps' do
       writer = TimeStampingWriter.new(SimpleWriter.new(path))
-      timenow = DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
       Timecop.freeze(timenow) do
         writer.write_line(text)
         writer.close
@@ -159,7 +162,6 @@ RSpec.describe 'all the writers' do
     writer = CheckSummingWriter.new(TimeStampingWriter.new(
                                       NumberingWriter.new(SimpleWriter.new(path))
     ))
-    timenow = DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
     Timecop.freeze(timenow) do
       writer.write_line(text)
       writer.close
@@ -204,7 +206,6 @@ RSpec.describe 'extending modules on an object' do
     w.extend(NumberingWriterModule)
     w.extend(TimeStampingWriterModule)
 
-    timenow = DateTime.new(2017, 12, 1, 0, 0, 0, '-08:00')
     Timecop.freeze(timenow) do
       w.write_line(text)
       w.close
@@ -221,7 +222,7 @@ end
 # because of re-opening SimpleWriter
 
 RSpec.describe 're-open to alias' do
-  it '' do
+  it 'and add time stamping to existing class' do
     w = SimpleWriter.new(path)
     class << w
       alias old_write_line write_line
@@ -231,6 +232,14 @@ RSpec.describe 're-open to alias' do
       end
     end
 
-    # test it here
+    Timecop.freeze(timenow) do
+      w.write_line(text)
+      w.close
+
+      File.readlines(path).each do |line|
+        expect(line).to eq "#{timenow}: #{text}\n"
+      end
+    end
+    File.delete(path)
   end
 end
