@@ -1,4 +1,6 @@
-require 'rspec'
+#!/usr/bin/env ruby
+
+require 'rspec/autorun'
 
 class ClassVariableTester
   attr_reader :instance_count
@@ -224,7 +226,7 @@ end
 
 # To support what follows afterwards
 class DatabaseConnectionManager
-  include singleton
+  include Singleton
 
   def get_connection
     'connected'
@@ -276,5 +278,5 @@ end
 
 # This class for production
 class SingletonLogger < SimpleLogger
-  include singleton
+  include Singleton
 end
