@@ -20,4 +20,18 @@ class Duck
   end
 end
 
+class Pond
+  def initialize(number_ducks)
+    @ducks = []
+    number_ducks.times do |i|
+      duck = Duck.new("Ducks #{i}")
+      @ducks << duck
+    end
+  end
 
+  def simulate_one_day
+    @duck.each { |duck| duck.speak }
+    @duck.each { |duck| duck.eat }
+    @duck.each { |duck| duck.sleep }
+  end
+end
