@@ -35,3 +35,21 @@ class Pond
     @duck.each { |duck| duck.sleep }
   end
 end
+
+class Frog
+  def initialize(name)
+    @name = name
+  end
+
+  def eat
+    "Frog #{name} is eating"
+  end
+
+  def speak
+    "Frog #{name} croaks"
+  end
+
+  def sleep
+    "Frog #{name} doesn't sleep"
+  end
+end
