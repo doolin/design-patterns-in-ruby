@@ -20,22 +20,6 @@ class Duck
   end
 end
 
-class Pond
-  def initialize(number_ducks)
-    @ducks = []
-    number_ducks.times do |i|
-      duck = Duck.new("Ducks #{i}")
-      @ducks << duck
-    end
-  end
-
-  def simulate_one_day
-    @duck.each { |duck| duck.speak }
-    @duck.each { |duck| duck.eat }
-    @duck.each { |duck| duck.sleep }
-  end
-end
-
 class Frog
   def initialize(name)
     @name = name
@@ -51,5 +35,33 @@ class Frog
 
   def sleep
     "Frog #{name} doesn't sleep"
+  end
+end
+
+class Pond
+  def initialize(number_animals)
+    @animals = []
+    number_animals.times do |i|
+      animal = animal.new("animals #{i}")
+      @animals << animal
+    end
+  end
+
+  def simulate_one_day
+    @animal.each { |animal| animal.speak }
+    @animal.each { |animal| animal.eat }
+    @animal.each { |animal| animal.sleep }
+  end
+end
+
+class DuckPond < Pond
+  def new_animal(name)
+    Duck.new(name)
+  end
+end
+
+class FrogPond < Pond
+  def new_animal(name)
+    Frog.new(name)
   end
 end
