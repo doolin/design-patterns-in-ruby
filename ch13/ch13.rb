@@ -65,3 +65,23 @@ class FrogPond < Pond
     Frog.new(name)
   end
 end
+
+# So far, not a fan of this method for Ruby code. It feels
+# overly complex and strangely restrictive at the same time.
+# One would think the complexity would be accompanied by
+# flexibility. Perhaps I'm not seeing it. I plan on working
+# throug the rest of the chapter, but probably not adding
+# a lot of testing, as it seems pointless. I should probably
+# add to these remarks that while this book is going pretty
+# slow (as demonstrated by the commits), I'm also working
+# on at least one other project in a private repo.
+
+class Algae
+  def initialize(name)
+    @name = name
+  end
+
+  def grow
+    "Algae #{@name} grows"
+  end
+end
