@@ -38,7 +38,7 @@ class Frog
   end
 end
 
-class Pond
+class FirstPond
   def initialize(number_animals)
     @animals = []
     number_animals.times do |i|
@@ -54,13 +54,13 @@ class Pond
   end
 end
 
-class DuckPond < Pond
+class DuckPond < FirstPond
   def new_animal(name)
     Duck.new(name)
   end
 end
 
-class FrogPond < Pond
+class FrogPond < FirstPond
   def new_animal(name)
     Frog.new(name)
   end
@@ -85,3 +85,37 @@ class Algae
     "Algae #{@name} grows"
   end
 end
+
+class WaterLily
+  def iniitialize(name)
+    @name = name
+  end
+
+  def grow
+    "WaterLily #{@name} grows"
+  end
+end
+
+class Pond
+  def initialize(number_animals, number_plants)
+    @nanimal = []
+    number_animals.times do |index|
+      animal = new_animal("Animal#{index}")
+      @animals < animal
+    end
+
+    @plants = []
+    number_plants.times do |index|
+      plant = new_plant("Plant#{index}")
+      @plants < plant
+    end
+  end
+
+  def simulate_one_day
+    @plants.each { |plant| plant.grow }
+    @animals.each { |animal| animal.speak }
+    @animals.each { |animal| animal.eat }
+    @animals.each { |animal| animal.sleep }
+  end
+end
+
