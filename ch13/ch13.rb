@@ -140,3 +140,32 @@ class FrogAlgaePond < Pond
 end
 
 # Things get contrived past here.
+
+# Let's try reopening Pond...
+class Pond
+  def initialize(number_animals, number_plants)
+    @nanimal = []
+    number_animals.times do |index|
+      animal = new_organism(:animal, "Animal#{index}")
+      @animals < animal
+    end
+
+    @plants = []
+    number_plants.times do |index|
+      plant = new_organism(:plant, "Plant#{index}")
+      @plants < plant
+    end
+  end
+end
+
+class DuckWaterLilyPond < Pond
+  def new_organism(type, name)
+    if type == :animal
+      Duck.new(name)
+    elsif type == :plant
+      WaterLily.new(name)
+    else
+      raise "Unknown organism type: #{type}"
+    end
+  end
+end
