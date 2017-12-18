@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require 'rspec/autorun'
+require 'pry'
 
 class Duck
   def initialize(name)
@@ -8,15 +9,15 @@ class Duck
   end
 
   def eat
-    "Duck #{name} is eating"
+    "Duck #{@name} is eating"
   end
 
   def speak
-    "Duck #{name} is speaking"
+    "Duck #{@name} is speaking"
   end
 
   def sleep
-    "Duck #{name} sleeps quietly"
+    "Duck #{@name} sleeps quietly"
   end
 end
 
@@ -87,7 +88,7 @@ class Algae
 end
 
 class WaterLily
-  def iniitialize(name)
+  def initialize(name)
     @name = name
   end
 
@@ -169,3 +170,36 @@ class DuckWaterLilyPond < Pond
     end
   end
 end
+
+class Pond
+  def initialize(number_animals, animal_class,
+                 number_plants, plant_class)
+    @animal_class = animal_class
+    @plant_class = plant_class
+
+    @animals = []
+    number_animals.times do |index|
+      animal = new_organism(:animal, "Animal#{index}")
+      @animals << animal
+    end
+
+    @plants = []
+    number_plants.times do |index|
+      plant = new_organism(:plant, "Plant#{index}")
+      @plants << plant
+    end
+  end
+
+  def new_organism(type, name)
+    if type == :animal
+      @animal_class.new(name)
+    elsif type == :plant
+      @plant_class.new(name)
+    else
+      raise "Unknown organism type: #{type}"
+    end
+  end
+end
+
+pond = Pond.new(3, Duck, 2, WaterLily)
+pond.simulate_one_day
