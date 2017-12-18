@@ -203,3 +203,41 @@ end
 
 pond = Pond.new(3, Duck, 2, WaterLily)
 pond.simulate_one_day
+
+class Tree
+  def initialize(name)
+    @name = name
+  end
+
+  def grow
+    "#{@name} grows tall"
+  end
+end
+
+class Tiger
+  def initialize(name)
+    @name = name
+  end
+
+  def eat
+    "Tiger #{@name} eats what it wants"
+  end
+
+  def speak
+    "Tiger #{@name} raors"
+  end
+
+  def sleep
+    "Tiger #{@name} sleeps where it wants"
+  end
+end
+
+class Habitat < Pond
+end
+
+jungle = Habitat.new(1, Tiger, 4, Tree)
+jungle.simulate_one_day
+
+pond = Pond.new(3, Duck, 2, WaterLily)
+pond.simulate_one_day
+
