@@ -241,3 +241,46 @@ jungle.simulate_one_day
 pond = Pond.new(3, Duck, 2, WaterLily)
 pond.simulate_one_day
 
+class PondOrganismFactory
+  def new_animal(name)
+    Frog.new(name)
+  end
+
+  def new_plant(name)
+    Algae.new(name)
+  end
+end
+
+class JungleOrganismFactory
+  def new_animal(name)
+    Tiger.new(name)
+  end
+
+  def new_plant
+    Tree.new(@name)
+  end
+end
+
+class Habitat
+  def initialize(number_animals, numbar_plants, organism_factory)
+    @organism_factory = organism_factory
+
+    @animals = []
+    number_animals.each do |i|
+      animal = @organism_factory.new_animal("Animal#{i}")
+      @animals << animal
+    end
+
+    @plants = []
+    number_plants.each do |i|
+      plant = @organism_factory.new_plant("Plant#{i}")
+      @plants << plant
+    end
+  end
+end
+
+jungle = Habitat.new(1, 4, JungleOrganismFactory.new)
+jungle.simulate_one_day
+
+pond = Habitat.new(2, 4, PondOrganismFactory.new)
+pond.simulate_one_day
