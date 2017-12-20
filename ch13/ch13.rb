@@ -27,15 +27,15 @@ class Frog
   end
 
   def eat
-    "Frog #{name} is eating"
+    "Frog #{@name} is eating"
   end
 
   def speak
-    "Frog #{name} croaks"
+    "Frog #{@name} croaks"
   end
 
   def sleep
-    "Frog #{name} doesn't sleep"
+    "Frog #{@name} doesn't sleep"
   end
 end
 
@@ -256,23 +256,23 @@ class JungleOrganismFactory
     Tiger.new(name)
   end
 
-  def new_plant
-    Tree.new(@name)
+  def new_plant(name)
+    Tree.new(name)
   end
 end
 
 class Habitat
-  def initialize(number_animals, numbar_plants, organism_factory)
+  def initialize(number_animals, number_plants, organism_factory)
     @organism_factory = organism_factory
 
     @animals = []
-    number_animals.each do |i|
+    number_animals.times do |i|
       animal = @organism_factory.new_animal("Animal#{i}")
       @animals << animal
     end
 
     @plants = []
-    number_plants.each do |i|
+    number_plants.times do |i|
       plant = @organism_factory.new_plant("Plant#{i}")
       @plants << plant
     end
@@ -284,3 +284,18 @@ jungle.simulate_one_day
 
 pond = Habitat.new(2, 4, PondOrganismFactory.new)
 pond.simulate_one_day
+
+class OrganismFactory
+  def initialize(plant_class, animal_class)
+    @plant_class = plant_class
+    @animal_class = animal_class
+  end
+
+  def new_animal(name)
+    @animal_class.new(name)
+  end
+
+  def new_plant(name)
+    @plant_class.new(name)
+  end
+end
