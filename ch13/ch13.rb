@@ -335,3 +335,12 @@ html_reader = html_factory.new_reader
 pdf_factory = IOFactory.new('PDF')
 pdf_writer = pdf_factory.new_writer
 
+RSpec.describe IOFactory do
+  describe '.new' do
+    context 'HTMLReader' do
+      it '' do
+        expect(IOFactory.new('HTML').new_reader.class).to eq HTMLReader
+      end
+    end
+  end
+end
