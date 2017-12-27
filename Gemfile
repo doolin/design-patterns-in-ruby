@@ -7,5 +7,6 @@ gem 'awesome_print'
 gem 'rubocop'
 gem 'pry-nav'
 gem 'fxruby'
+gem 'mail'
 
 gem 'madeleine'

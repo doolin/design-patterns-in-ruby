@@ -23,7 +23,10 @@ GEM
       mini_portile2 (~> 2.1)
     json (2.1.0)
     madeleine (0.9.0)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     method_source (0.8.2)
+    mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -86,6 +89,7 @@ DEPENDENCIES
   deckrb
   fxruby
   madeleine
+  mail
   pry-nav
   rspec
   rubocop

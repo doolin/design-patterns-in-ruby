@@ -1,5 +1,30 @@
 #!/usr/bin/env ruby
 
+# p. 249 Object Construction with Builder Pattern
+#
+# This chapter on builders is a logical extension of the
+# previous chapter on factories.
+#
+# Writing this after having finished both chapters, my
+# hunch is that Ruby finds a middle way between builders
+# and factories with the technique FactoryBot and Mail
+# gem uses: pass relevant methods to the class's new
+# method in a block. For example:
+#
+# foo = Foo.new do
+#   bar 'baz'
+# end
+#
+# It would be cool to rewrite the material here to use
+# that technique.
+
+# Also, having now written out most of the examples in
+# the chapter, there is very little of import to test.
+# Any tests I would write seem trivial, even to me. Most
+# everything in the chapter is simple instantiation or
+# assignment, with no logic, so there is little point
+# to testing.
+
 require 'rspec/autorun'
 require 'pry'
 
@@ -45,14 +70,22 @@ class Drive
   end
 end
 
-motherboard  = Motherboard.new(TurboCpu.new, 4000)
 
-drives = []
-drives << Drive.new(:hard_drive, 200_000, true)
-drives << Drive.new(:cd, 760, true)
-drives << Drive.new(:dvd, 4700, false)
+RSpec.describe Computer do
+  describe '.new' do
+    it '' do
+      motherboard  = Motherboard.new(TurboCpu.new, 4000)
+      drives = []
+      drives << Drive.new(:hard_drive, 200_000, true)
+      drives << Drive.new(:cd, 760, true)
+      drives << Drive.new(:dvd, 4700, false)
 
-computer = Computer.new(:lcd, motherboard, drives)
+      computer = Computer.new(:lcd, motherboard, drives)
+      expect(computer).not_to be nil
+    end
+  end
+
+end
 
 class ComputerBuilder
   attr_reader :computer
@@ -159,4 +192,3 @@ RSpec.describe ComputerBuilder do
     end
   end
 end
-
