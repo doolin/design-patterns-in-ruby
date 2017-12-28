@@ -8,5 +8,6 @@ gem 'rubocop'
 gem 'pry-nav'
 gem 'fxruby'
 gem 'mail'
+gem 'runt'
 
 gem 'madeleine'

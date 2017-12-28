@@ -74,3 +74,217 @@ RSpec.describe Bigger do
     it 'finds non-empty files'
   end
 end
+
+class Writable < Expression
+  def evaluate(dir)
+    results = []
+    Find.find(dir) do |p|
+      next unless File.file?(p)
+      results << p if File.writable?(p)
+    end
+    results
+  end
+end
+
+RSpec.describe Writable do
+  describe '#evaluate' do
+    it 'finds writable files'
+  end
+end
+
+class Not < Expression
+  def initialize(expression)
+    @expression = expression
+  end
+
+  def evaluate(dir)
+    All.new.evaluate(dir) - @expression.evaluate(dir)
+  end
+end
+
+RSpec.describe Not do
+  describe '#evaluate' do
+    it 'finds the non-writable files'
+  end
+end
+
+class Or < Expression
+  def initialize(exp1, exp2)
+    @exp1 = exp1
+    @exp2 = exp2
+  end
+
+  def evaluate(dir)
+    result1 = @exp1.evaluate(dir)
+    result2 = @exp2.evaluate(dir)
+    (result1 + result2).sort.uniq
+  end
+end
+
+RSpec.describe Or do
+  describe '#evaluate' do
+    it 'finds txt and writable files'
+  end
+end
+
+class And < Expression
+  def initialize(exp1, exp2)
+    @exp1 = exp1
+    @exp2 = exp2
+  end
+
+  def evaluate(dir)
+    result1 = @exp1.evaluate(dir)
+    result2 = @exp2.evaluate(dir)
+    (result1 & result2)
+  end
+end
+
+RSpec.describe And do
+  describe '#evaluate' do
+    it 'finds big non-writable files'
+  end
+end
+
+# TODO: write a test for the scanner.
+class Parser
+  attr_reader :tokens # for testing
+
+  def initialize(text)
+    @tokens = text.scan(/\(|\)|[\w\.\*]+/)
+  end
+
+  def next_token
+    @tokens.shift
+  end
+
+  def expression
+    token = next_token
+
+    if token.nil?
+      return nil
+    elsif token == '('
+      result = expression
+      raise "Expected ')'" unless next_token == ')'
+      result
+    elsif token == 'all'
+      return All.new
+    elsif token == 'writable'
+      return Writable.new
+    elsif token == 'bigger'
+      return Bigger.new(next_token.to_i)
+    elsif token == 'filename'
+      Filename.new(next_token)
+    elsif token == 'not'
+      return Not.new(expression)
+    elsif token == 'and'
+      return And.new(expression, expression)
+    elsif token == 'or'
+      return Or.new(expression, expression)
+    else
+      raise "Unexpected token: #{token}"
+    end
+  end
+end
+
+# p. 274
+parser = Parser.new("and (and(bigger 1024)(filename *.txt)) writable")
+ast = parser.expression
+
+RSpec.describe Parser do
+  describe '.new' do
+    it 'tokenizes on instantiation'
+  end
+
+  describe '#expression' do
+    it 'does something with ast...?'
+  end
+end
+
+class Expression
+  def self.|(other)
+      Or.new(self, other)
+  end
+
+  def self.&(other)
+      And.new(self, other)
+  end
+end
+
+# TODO: figure out what the author is trying to do here,
+# then make it work.
+=begin
+Or.new(
+  And.new(Bigger.new(2000), Not.new(Writable.new)), Filename.new('*.txt')
+)
+
+Or.new(
+  (Bigger.new(2000) & Not.new(Writable.new)) | Filename.new('*.txt')
+)
+=end
+
+# TODO: figure out whether these belong in the Expression class
+# or are top level methods. Might want to check the errata.
+# class Expression
+  def all
+    All.new
+  end
+
+  def bigger(size)
+    Bigger.new(size)
+  end
+
+  def name(pattern)
+    Filename.new(pattern)
+  end
+
+  def except(expression)
+    Not.new(expression)
+  end
+
+  def writable
+    Writable.new
+  end
+# end
+
+# TODO: write a spec to evaluate:
+exp = Parser.new("(bigger(2000) & except(writable)) | name('*.txt')")
+
+
+# p. 279
+#
+# Runt gem
+#
+# From this paper: https://martinfowler.com/apsupp/recurring.pdf
+
+require 'date'
+# TODO: rename this to ruby_temporal.
+# NOTE: this crashes unless date/format is removed from the
+# gem `lib/runt.rb`
+require 'runt'
+
+# TODO: move to let() {}
+mondays = Runt::DIWeek.new(Runt::Monday)
+wednesdays = Runt::DIWeek.new(Runt::Wednesday)
+fridays = Runt::DIWeek.new(Runt::Friday)
+
+RSpec.describe self do
+  example 'christmas on Monday in 2015?' do
+    expect(mondays.include?(Date.new(2015, 12, 25))).to be false
+  end
+
+  example 'christmas on Wednesday in 2015?' do
+    expect(wednesdays.include?(Date.new(2015, 12, 25))).to be false
+  end
+
+  example 'christmas on Friday in 2015?' do
+    expect(fridays.include?(Date.new(2015, 12, 25))).to be true
+  end
+end
+
+nine_to_twelve = Runt::REDay.new(9, 0, 12, 0)
+class_times = (mondays | wednesdays | fridays) & nine_to_twelve
+
+# TODO: wrap a spec around this.
+puts class_times
+# every every Monday or Wednesday or Friday and from 09:00AM to 12:00PM daily
