@@ -1,0 +1,7 @@
+# PackRat dsl
+
+backup './home/russ/documents'
+backup './home/russ/music', filename('*.mp3') & filename('*.wav')
+backup './home/russ/images', except(filename('*.tmp'))
+to './external_drive/backups'
+interval 60
