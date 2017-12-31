@@ -7,7 +7,7 @@ class Backup
   attr_reader :data_sources
 
   def initialize
-    @data_source = []
+    @data_sources = []
     @backup_directory = '/tmp/backup'
     @interval = 60
   end

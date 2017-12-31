@@ -1,8 +1,11 @@
 #!/usr/bin/env ruby
 
-require './finder'
+require './expression'
+require './parser'
 require './backup'
 require './data_source'
+
+require 'pry'
 
 def backup(dir, find_expression = All.new)
   puts "Backup called, source dir=#{dir} find expr=#{find_expression}"
@@ -11,7 +14,7 @@ end
 
 def to(backup_directory)
   puts "To called, backup dir=#{backup_directory}"
-  Backup.instance.backup_directory = back_directory
+  Backup.instance.backup_directory = backup_directory
 end
 
 def interval(minutes)
@@ -19,5 +22,6 @@ def interval(minutes)
   Backup.instance.interval = minutes
 end
 
-eval(File.read('backup.pr'))
+# eval(File.read('backup.pr'))
+eval(File.read('single.pr'))
 Backup.instance.run

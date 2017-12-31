@@ -7,7 +7,7 @@ class DataSource
   end
 
   def backup(backup_directory)
-    files = @finder_expressions.evaluate(@directory)
+    files = @finder_expression.evaluate(@directory)
     files.each do |file|
       backup_file(file, backup_directory)
     end
