@@ -7,6 +7,26 @@ require './data_source'
 
 require 'pry'
 
+def all
+  All.new
+end
+
+def bigger(size)
+  Bigger.new(size)
+end
+
+def filename(pattern)
+  Filename.new(pattern)
+end
+
+def except(expression)
+  Not.new(expression)
+end
+
+def writable
+  Writable.new
+end
+
 def backup(dir, find_expression = All.new)
   puts "Backup called, source dir=#{dir} find expr=#{find_expression}"
   Backup.instance.data_sources << DataSource.new(dir, find_expression)
@@ -23,5 +43,6 @@ def interval(minutes)
 end
 
 # eval(File.read('backup.pr'))
-eval(File.read('single.pr'))
+# eval(File.read('single.pr'))
+eval(File.read('music.pr'))
 Backup.instance.run

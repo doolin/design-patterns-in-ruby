@@ -227,7 +227,7 @@ Or.new(
     Bigger.new(size)
   end
 
-  def name(pattern)
+  def filename(pattern)
     Filename.new(pattern)
   end
 

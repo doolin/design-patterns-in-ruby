@@ -1,7 +1,21 @@
 require 'find'
 
 class Expression
+  def self.|(other)
+      Or.new(self, other)
+  end
+
+  def &(other)
+      And.new(self, other)
+  end
+
+  # TODO: go back through the book to figure out
+  # why this was defined as a class method.
+  def self.&(other)
+      And.new(self, other)
+  end
 end
+
 
 class All < Expression
   def evaluate(dir)
@@ -89,15 +103,5 @@ class And < Expression
     result1 = @exp1.evaluate(dir)
     result2 = @exp2.evaluate(dir)
     (result1 & result2)
-  end
-end
-
-class Expression
-  def self.|(other)
-      Or.new(self, other)
-  end
-
-  def self.&(other)
-      And.new(self, other)
   end
 end

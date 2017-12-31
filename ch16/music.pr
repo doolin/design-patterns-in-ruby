@@ -1,0 +1,5 @@
+# PackRat dsl
+
+backup './home/russ/music', filename('*.mp3') & filename('*.wav')
+to './external_drive/backups'
+interval 60
