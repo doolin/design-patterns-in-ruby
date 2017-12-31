@@ -1,3 +1,5 @@
+require 'singleton'
+
 class Backup
   include Singleton
 
@@ -6,7 +8,7 @@ class Backup
 
   def initialize
     @data_source = []
-    @backup_directory = '/backup'
+    @backup_directory = '/tmp/backup'
     @interval = 60
   end
 
