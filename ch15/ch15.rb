@@ -50,7 +50,10 @@ RSpec.describe Filename do
       expect(count).to eq 1
     end
 
-    it 'handles regex *.txt'
+    it 'handles regex *.txt' do
+      count = Filename.new('*.txt').evaluate('./files').count
+      expect(count).to eq 1
+    end
   end
 end
 
