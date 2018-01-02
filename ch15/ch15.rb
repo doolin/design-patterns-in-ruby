@@ -22,7 +22,7 @@ end
 RSpec.describe All do
   describe '#evaluate' do
     it '' do
-      expect(All.new.evaluate('./files').count).to eq 1
+      expect(All.new.evaluate('./files').count).to eq 3
     end
   end
 end
@@ -52,7 +52,7 @@ RSpec.describe Filename do
 
     it 'handles regex *.txt' do
       count = Filename.new('*.txt').evaluate('./files').count
-      expect(count).to eq 1
+      expect(count).to eq 3
     end
   end
 end
@@ -91,7 +91,10 @@ end
 
 RSpec.describe Writable do
   describe '#evaluate' do
-    it 'finds writable files'
+    it 'finds writable files' do
+      count = Writable.new.evaluate('./files').count
+      expect(count).to eq 2
+    end
   end
 end
 
