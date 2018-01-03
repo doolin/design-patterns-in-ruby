@@ -74,7 +74,10 @@ end
 
 RSpec.describe Bigger do
   describe '#evaluate' do
-    it 'finds non-empty files'
+    it 'finds non-empty files' do
+      count = Bigger.new(0).evaluate('./files').count
+      expect(count).to eq 0
+    end
   end
 end
 
@@ -110,7 +113,10 @@ end
 
 RSpec.describe Not do
   describe '#evaluate' do
-    it 'finds the non-writable files'
+    it 'finds the non-writable files' do
+      count = Not.new(Writable.new).evaluate('./files').count
+      expect(count).to eq 1
+    end
   end
 end
 
