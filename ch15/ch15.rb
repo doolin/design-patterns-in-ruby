@@ -135,7 +135,10 @@ end
 
 RSpec.describe Or do
   describe '#evaluate' do
-    it 'finds txt and writable files'
+    it 'finds txt and writable files' do
+      count = Or.new(Writable.new, Bigger.new(0)).evaluate('./files').count
+      expect(count).to eq 2
+    end
   end
 end
 
