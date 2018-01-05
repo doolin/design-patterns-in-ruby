@@ -157,7 +157,10 @@ end
 
 RSpec.describe And do
   describe '#evaluate' do
-    it 'finds big non-writable files'
+    it 'finds big non-writable files' do
+      count = And.new(Writable.new, Bigger.new(0)).evaluate('./files').count
+      expect(count).to eq 0
+    end
   end
 end
 
