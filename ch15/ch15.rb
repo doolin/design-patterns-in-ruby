@@ -22,7 +22,7 @@ end
 RSpec.describe All do
   describe '#evaluate' do
     it '' do
-      expect(All.new.evaluate('./files').count).to eq 3
+      expect(All.new.evaluate('./files').count).to eq 4
     end
   end
 end
@@ -52,7 +52,7 @@ RSpec.describe Filename do
 
     it 'handles regex *.txt' do
       count = Filename.new('*.txt').evaluate('./files').count
-      expect(count).to eq 3
+      expect(count).to eq 4
     end
   end
 end
@@ -76,7 +76,7 @@ RSpec.describe Bigger do
   describe '#evaluate' do
     it 'finds non-empty files' do
       count = Bigger.new(0).evaluate('./files').count
-      expect(count).to eq 0
+      expect(count).to eq 1
     end
   end
 end
@@ -96,7 +96,7 @@ RSpec.describe Writable do
   describe '#evaluate' do
     it 'finds writable files' do
       count = Writable.new.evaluate('./files').count
-      expect(count).to eq 2
+      expect(count).to eq 3
     end
   end
 end
@@ -137,7 +137,7 @@ RSpec.describe Or do
   describe '#evaluate' do
     it 'finds txt and writable files' do
       count = Or.new(Writable.new, Bigger.new(0)).evaluate('./files').count
-      expect(count).to eq 2
+      expect(count).to eq 3
     end
   end
 end
@@ -159,7 +159,7 @@ RSpec.describe And do
   describe '#evaluate' do
     it 'finds big non-writable files' do
       count = And.new(Writable.new, Bigger.new(0)).evaluate('./files').count
-      expect(count).to eq 0
+      expect(count).to eq 1
     end
   end
 end
@@ -211,11 +211,26 @@ ast = parser.expression
 
 RSpec.describe Parser do
   describe '.new' do
-    it 'tokenizes on instantiation'
+    it 'tokenizes on instantiation' do
+      parser = Parser.new("and (and(bigger 1024)(filename *.txt)) writable")
+      ast = parser.expression
+      expect(ast).not_to be nil
+    end
   end
 
   describe '#expression' do
-    it 'does something with ast...?'
+    it 'finds files' do
+      expr = 'filename *.txt'
+      count = Parser.new(expr).expression.evaluate('./files').count
+      expect(count).to eq 4
+    end
+
+    it 'finds a bigger file' do
+      expr = 'bigger(0)'
+      ast = Parser.new(expr).expression
+      result = ast.evaluate('./files').count
+      expect(result).to eq 1
+    end
   end
 end
 
