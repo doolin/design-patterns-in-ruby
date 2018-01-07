@@ -22,7 +22,7 @@ end
 RSpec.describe All do
   describe '#evaluate' do
     it '' do
-      expect(All.new.evaluate('./files').count).to eq 4
+      expect(All.new.evaluate('./files').count).to eq 5
     end
   end
 end
@@ -96,7 +96,7 @@ RSpec.describe Writable do
   describe '#evaluate' do
     it 'finds writable files' do
       count = Writable.new.evaluate('./files').count
-      expect(count).to eq 3
+      expect(count).to eq 4
     end
   end
 end
@@ -137,7 +137,7 @@ RSpec.describe Or do
   describe '#evaluate' do
     it 'finds txt and writable files' do
       count = Or.new(Writable.new, Bigger.new(0)).evaluate('./files').count
-      expect(count).to eq 3
+      expect(count).to eq 4
     end
   end
 end
@@ -219,7 +219,13 @@ RSpec.describe Parser do
   end
 
   describe '#expression' do
-    it 'finds files' do
+    it 'all finds all the files' do
+      expr = 'all'
+      count = Parser.new(expr).expression.evaluate('./files').count
+      expect(count).to eq 5
+    end
+
+    it 'filename finds files' do
       expr = 'filename *.txt'
       count = Parser.new(expr).expression.evaluate('./files').count
       expect(count).to eq 4
