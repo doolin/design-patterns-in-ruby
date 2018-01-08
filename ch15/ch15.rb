@@ -209,6 +209,10 @@ end
 parser = Parser.new("and (and(bigger 1024)(filename *.txt)) writable")
 ast = parser.expression
 
+def files
+  './files'
+end
+
 RSpec.describe Parser do
   describe '.new' do
     it 'tokenizes on instantiation' do
@@ -236,6 +240,12 @@ RSpec.describe Parser do
       ast = Parser.new(expr).expression
       result = ast.evaluate('./files').count
       expect(result).to eq 1
+    end
+
+    it 'invokes not' do
+      expr = 'not(filename *.txt)'
+      count = Parser.new(expr).expression.evaluate(files).count
+      expect(count).to eq 1
     end
   end
 end
