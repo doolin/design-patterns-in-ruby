@@ -225,20 +225,20 @@ RSpec.describe Parser do
   describe '#expression' do
     it 'all finds all the files' do
       expr = 'all'
-      count = Parser.new(expr).expression.evaluate('./files').count
+      count = Parser.new(expr).expression.evaluate(files).count
       expect(count).to eq 5
     end
 
     it 'filename finds files' do
       expr = 'filename *.txt'
-      count = Parser.new(expr).expression.evaluate('./files').count
+      count = Parser.new(expr).expression.evaluate(files).count
       expect(count).to eq 4
     end
 
     it 'finds a bigger file' do
       expr = 'bigger(0)'
       ast = Parser.new(expr).expression
-      result = ast.evaluate('./files').count
+      result = ast.evaluate(files).count
       expect(result).to eq 1
     end
 
@@ -246,6 +246,12 @@ RSpec.describe Parser do
       expr = 'not(filename *.txt)'
       count = Parser.new(expr).expression.evaluate(files).count
       expect(count).to eq 1
+    end
+
+    it 'finds not writable file' do
+      expr = 'not writable'
+      filename = Parser.new(expr).expression.evaluate(files).first
+      expect(filename).to eq './files/baz.txt'
     end
   end
 end
