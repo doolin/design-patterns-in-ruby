@@ -19,10 +19,14 @@ class All < Expression
   end
 end
 
+def files
+  './files'
+end
+
 RSpec.describe All do
   describe '#evaluate' do
     it '' do
-      expect(All.new.evaluate('./files').count).to eq 5
+      expect(All.new.evaluate(files).count).to eq 5
     end
   end
 end
@@ -46,12 +50,12 @@ end
 RSpec.describe Filename do
   describe '#evaluate' do
     it '' do
-      count = Filename.new('foo.txt').evaluate('./files').count
+      count = Filename.new('foo.txt').evaluate(files).count
       expect(count).to eq 1
     end
 
     it 'handles regex *.txt' do
-      count = Filename.new('*.txt').evaluate('./files').count
+      count = Filename.new('*.txt').evaluate(files).count
       expect(count).to eq 4
     end
   end
@@ -75,7 +79,7 @@ end
 RSpec.describe Bigger do
   describe '#evaluate' do
     it 'finds non-empty files' do
-      count = Bigger.new(0).evaluate('./files').count
+      count = Bigger.new(0).evaluate(files).count
       expect(count).to eq 1
     end
   end
@@ -95,7 +99,7 @@ end
 RSpec.describe Writable do
   describe '#evaluate' do
     it 'finds writable files' do
-      count = Writable.new.evaluate('./files').count
+      count = Writable.new.evaluate(files).count
       expect(count).to eq 4
     end
   end
@@ -114,7 +118,7 @@ end
 RSpec.describe Not do
   describe '#evaluate' do
     it 'finds the non-writable files' do
-      count = Not.new(Writable.new).evaluate('./files').count
+      count = Not.new(Writable.new).evaluate(files).count
       expect(count).to eq 1
     end
   end
@@ -136,7 +140,7 @@ end
 RSpec.describe Or do
   describe '#evaluate' do
     it 'finds txt and writable files' do
-      count = Or.new(Writable.new, Bigger.new(0)).evaluate('./files').count
+      count = Or.new(Writable.new, Bigger.new(0)).evaluate(files).count
       expect(count).to eq 4
     end
   end
@@ -158,7 +162,7 @@ end
 RSpec.describe And do
   describe '#evaluate' do
     it 'finds big non-writable files' do
-      count = And.new(Writable.new, Bigger.new(0)).evaluate('./files').count
+      count = And.new(Writable.new, Bigger.new(0)).evaluate(files).count
       expect(count).to eq 1
     end
   end
@@ -208,10 +212,6 @@ end
 # p. 274
 parser = Parser.new("and (and(bigger 1024)(filename *.txt)) writable")
 ast = parser.expression
-
-def files
-  './files'
-end
 
 RSpec.describe Parser do
   describe '.new' do
