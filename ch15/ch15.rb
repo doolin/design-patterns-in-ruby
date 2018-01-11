@@ -253,6 +253,12 @@ RSpec.describe Parser do
       filename = Parser.new(expr).expression.evaluate(files).first
       expect(filename).to eq './files/baz.txt'
     end
+
+    it 'bigger writable txt files' do
+      expr = 'and (and(bigger 0)(filename *.txt)) writable'
+      count = Parser.new(expr).expression.evaluate(files).count
+      expect(count).to eq 1
+    end
   end
 end
 
