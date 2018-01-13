@@ -259,6 +259,12 @@ RSpec.describe Parser do
       count = Parser.new(expr).expression.evaluate(files).count
       expect(count).to eq 1
     end
+
+    it 'bigger not writable txt files' do
+      expr = 'and (and(bigger 0)(filename *.txt)) (not writable)'
+      count = Parser.new(expr).expression.evaluate(files).count
+      expect(count).to eq 0
+    end
   end
 end
 
