@@ -1,3 +1,5 @@
+require 'pry'
+
 class DataSource
   attr_reader :directory, :finder_expression
 
@@ -7,6 +9,7 @@ class DataSource
   end
 
   def backup(backup_directory)
+    binding.pry
     files = @finder_expression.evaluate(@directory)
     files.each do |file|
       backup_file(file, backup_directory)

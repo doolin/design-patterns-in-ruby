@@ -24,4 +24,8 @@ class Backup
       sleep(@interval * 60)
     end
   end
+
+  def run
+    backup_files
+  end
 end
