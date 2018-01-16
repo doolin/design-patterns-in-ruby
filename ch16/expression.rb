@@ -5,6 +5,10 @@ class Expression
       Or.new(self, other)
   end
 
+  def |(other)
+      Or.new(self, other)
+  end
+
   def &(other)
       And.new(self, other)
   end
@@ -15,7 +19,6 @@ class Expression
       And.new(self, other)
   end
 end
-
 
 class All < Expression
   def evaluate(dir)
