@@ -77,4 +77,16 @@ module Diurnal
   end
 end
 
+def new_animal(diet, awake)
+  animal = Object.new
+
+  if diet == :meat
+    animal.extend(Carnivore)
+  else
+    animal.extend(Herbivore)
+  end
+
+  animal
+end
+
 
