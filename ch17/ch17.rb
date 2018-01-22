@@ -86,7 +86,22 @@ def new_animal(diet, awake)
     animal.extend(Herbivore)
   end
 
+  if awake == :day
+    animal.extend(Diurnal)
+  else
+    animal.extend(Nocturnal)
+  end
+
   animal
 end
 
+class CompositeBase
+end
 
+class Jungle < CompositeBase
+  composite_of(:population)
+end
+
+class Species < CompositeBase
+  composite_of(:classification)
+end
