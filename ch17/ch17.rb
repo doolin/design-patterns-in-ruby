@@ -96,12 +96,42 @@ def new_animal(diet, awake)
 end
 
 class CompositeBase
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def self.member_of(composite_name)
+    code = %Q(attr_accessor :parent_#{composite_name})
+    class_eval(code)
+  end
+
+  def self.composite_of(composite_name)
+    code = %Q(
+      def sub_#{composite_name}s
+        @sub_#{composite_name}s = [] unless @sub_#{composite_nme}s
+        @sub_#{composite_name}s
+      end
+
+      def add_sub_#{composite_name}(child)
+      end
+
+      def delete_sub_#{composite_name}(child)
+      end
+    )
+    class_eval(code)
+  end
 end
 
 class Jungle < CompositeBase
   composite_of(:population)
 end
 
+RSpec.describe Jungle do
+end
+
 class Species < CompositeBase
   composite_of(:classification)
 end
+
