@@ -115,6 +115,9 @@ class CompositeBase
       end
 
       def add_sub_#{composite_name}(child)
+        return if sub_#{composite_name}s.include?(child)
+        sub_#{composite_name}s << child
+        child.parent_#{composite_name} = self
       end
 
       def delete_sub_#{composite_name}(child)
