@@ -121,6 +121,9 @@ class CompositeBase
       end
 
       def delete_sub_#{composite_name}(child)
+        return unless sub_#{composite_name}s.include?(child)
+        sub_#{composite_name}s.delete(child)
+        child.parent_#{composite_name} = nil
       end
     )
     class_eval(code)
