@@ -110,7 +110,7 @@ class CompositeBase
   def self.composite_of(composite_name)
     code = %Q(
       def sub_#{composite_name}s
-        @sub_#{composite_name}s = [] unless @sub_#{composite_nme}s
+        @sub_#{composite_name}s = [] unless @sub_#{composite_name}s
         @sub_#{composite_name}s
       end
 
@@ -130,11 +130,22 @@ class CompositeBase
   end
 end
 
+class Tiger < CompositeBase
+  member_of(:population)
+  member_of(:classification)
+end
+
 class Jungle < CompositeBase
   composite_of(:population)
 end
 
 RSpec.describe Jungle do
+  it '' do
+    tony_tiger = Tiger.new('tony')
+    se_jungle = Jungle.new('southeastern jungle tigers')
+    se_jungle.add_sub_population(tony_tiger)
+    expect(tony_tiger.parent_population).to eq se_jungle
+  end
 end
 
 class Species < CompositeBase
