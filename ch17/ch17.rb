@@ -140,14 +140,19 @@ class Jungle < CompositeBase
 end
 
 RSpec.describe Jungle do
+  let(:tony_tiger) { Tiger.new('tony') }
+
   it 'parent_population' do
-    tony_tiger = Tiger.new('tony')
     se_jungle = Jungle.new('southeastern jungle tigers')
     se_jungle.add_sub_population(tony_tiger)
     expect(tony_tiger.parent_population).to eq se_jungle
   end
 
-  it 'species'
+  it 'species' do
+    species = Species.new('P. tigris')
+    species.add_sub_classification(tony_tiger)
+    expect(tony_tiger.parent_classification).to eq species
+  end
 end
 
 class Species < CompositeBase
