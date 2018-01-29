@@ -148,7 +148,7 @@ RSpec.describe Jungle do
     expect(tony_tiger.parent_population).to eq se_jungle
   end
 
-  it 'species' do
+  it 'parent_classification' do
     species = Species.new('P. tigris')
     species.add_sub_classification(tony_tiger)
     expect(tony_tiger.parent_classification).to eq species
