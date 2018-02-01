@@ -15,3 +15,14 @@ end
 
 RSpec.describe Message do
 end
+
+require 'net/smtp'
+
+class SmtpAdapter
+  MailServerHost = 'localhost'
+  MailServerPort = '25'
+
+  def send(message)
+
+  end
+end
