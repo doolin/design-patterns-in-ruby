@@ -23,6 +23,7 @@ class SmtpAdapter
   MailServerPort = '25'
 
   def send(message)
-
+    from_address = message.from.user + '@' + message.from.host
+    to_address = message.to.user + '@' + message.to.host
   end
 end
