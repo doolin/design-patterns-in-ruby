@@ -31,5 +31,14 @@ class SmtpAdapter
     email_text += "Subject: Forwarded message\n"
     email_text += "\n"
     email_text += message.text
+
+    Net::SMTP.start(MailServerHost, MailServerPort) do |smtp|
+      smtp.send_message(email_text, from_address, to_address)
+    end
   end
+end
+
+require 'net/http'
+
+class HttpAdapter
 end
