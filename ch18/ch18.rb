@@ -13,6 +13,13 @@ class Message
   end
 end
 
+def message
+  from = 'foo'
+  to = 'file:///foo/bar'
+  body = 'baz'
+  Message.new(from, to, body)
+end
+
 RSpec.describe Message do
 end
 
@@ -41,4 +48,9 @@ end
 require 'net/http'
 
 class HttpAdapter
+  def send(message)
+    Net::HTTP.start(message.to.host, message.to.port) do |http|
+      http.post(message.to.path, message.text)
+    en
+  end
 end
