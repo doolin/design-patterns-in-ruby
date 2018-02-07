@@ -69,3 +69,14 @@ class FileAdapter
     end
   end
 end
+
+class MessageGateway
+  def initialize
+    load_adapters
+  end
+
+  def process_message(meesage)
+    adapter = adapter_for(message)
+    adapter.send_message(message)
+  end
+end
