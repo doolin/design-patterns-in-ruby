@@ -95,4 +95,9 @@ class MessageGateway
 end
 
 RSpec.describe MessageGateway do
+  describe '.new' do
+    it '' do
+      expect(described_class.new).not_to be nil
+    end
+  end
 end
