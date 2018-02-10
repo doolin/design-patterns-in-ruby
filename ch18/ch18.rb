@@ -101,3 +101,17 @@ RSpec.describe MessageGateway do
     end
   end
 end
+
+def camel_case(string)
+  tokens = string.split('.')
+  tokens.map! { |t| t.capitalize }
+  tokens.join('Dot')
+end
+
+RSpec.describe self do
+  describe 'camel_case' do
+    it '' do
+      expect(camel_case('dool.in')).to eq 'DoolDotIn'
+    end
+  end
+end
