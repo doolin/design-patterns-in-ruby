@@ -105,12 +105,34 @@ RSpec.describe MessageGateway do
 end
 
 class DoolDotInAuthorizer
+  def dool_dot_in_authorized?(message)
+    true
+  end
+
+  def authorized?(message)
+    message.body.size < 2048
+  end
 end
 
 def camel_case(string)
   tokens = string.split('.')
   tokens.map! { |t| t.capitalize }
   tokens.join('Dot')
+end
+
+def worm_case(string)
+  tokens = string.split('.')
+  tokens.map! { |t| t.downcase }
+  tokens.join('_dot_')
+end
+
+def authorized?(message)
+  authorizer = authorizer_for(meesage)
+  user_method = worm_case(message_from) + '_authorized?'
+  if authorizer.respond_to?(user_method)
+    return authorizer.send(user_method, message)
+  end
+  authorizer.authorized?(message)
 end
 
 def authorizer_for(message)
