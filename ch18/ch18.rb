@@ -2,6 +2,7 @@
 
 require 'rspec/autorun'
 require 'uri'
+require 'pry'
 
 class Message
   attr_accessor :from, :to, :body
@@ -16,6 +17,7 @@ end
 def message
   from = 'foo'
   to = 'file:///foo/bar'
+  to = 'smtp://dave@dool.in'
   body = 'baz'
   Message.new(from, to, body)
 end
@@ -102,16 +104,32 @@ RSpec.describe MessageGateway do
   end
 end
 
+class DoolDotInAuthorizer
+end
+
 def camel_case(string)
   tokens = string.split('.')
   tokens.map! { |t| t.capitalize }
   tokens.join('Dot')
 end
 
+def authorizer_for(message)
+  to_host = message.to.host || 'default'
+  authorizer_class = camel_case(to_host) + 'Authorizer'
+  authorizer_class = self.class.const_get(authorizer_class)
+  authorizer_class.new
+end
+
 RSpec.describe self do
   describe 'camel_case' do
     it '' do
       expect(camel_case('dool.in')).to eq 'DoolDotIn'
+    end
+  end
+
+  describe 'authorizer_for' do
+    it '' do
+      expect(authorizer_for(message).class).to eq DoolDotInAuthorizer
     end
   end
 end
