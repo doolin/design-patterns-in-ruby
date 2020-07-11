@@ -6,7 +6,7 @@ gem 'timecop'
 gem 'awesome_print'
 gem 'rubocop'
 gem 'pry-nav'
-gem 'fxruby'
+# gem 'fxruby' # FOX toolkit.
 gem 'mail'
 gem 'runt'
 
