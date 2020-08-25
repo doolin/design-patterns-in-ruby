@@ -19,7 +19,7 @@ GEM
     erector (0.10.0)
       treetop (>= 1.2.3)
     eventmachine (1.2.5)
-    json (2.1.0)
+    json (2.3.1)
     madeleine (0.9.0)
     mail (2.7.1)
       mini_mime (>= 0.1.1)
