@@ -19,8 +19,6 @@ GEM
     erector (0.10.0)
       treetop (>= 1.2.3)
     eventmachine (1.2.5)
-    fxruby (1.6.38)
-      mini_portile2 (~> 2.1)
     json (2.1.0)
     madeleine (0.9.0)
     mail (2.7.0)
@@ -88,7 +86,6 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   deckrb
-  fxruby
   madeleine
   mail
   pry-nav
@@ -98,4 +95,4 @@ DEPENDENCIES
   timecop
 
 BUNDLED WITH
-   1.16.0
+   2.1.4
