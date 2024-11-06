@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 require 'rspec/autorun'
 
@@ -13,14 +14,13 @@ require 'rspec/autorun'
 # engines is delegated to specific engine classes. I've gone
 # a little further and moved the start and stop into a
 # super class.
-
 class Engine
   def start
-    "engine started"
+    'engine started'
   end
 
   def stop
-    "engine stopped"
+    'engine stopped'
   end
 end
 
@@ -30,6 +30,7 @@ end
 class DieselEngine < Engine
 end
 
+# Make rubocop happy
 class Car
   # It would almost surely be better to pass the engine
   # class in as a parameter.
@@ -73,6 +74,7 @@ RSpec.describe Car do
   end
 
   describe '#switch_to_diesel' do
+    skip('add an example for diesel')
   end
 
   describe '#start_engine' do
@@ -115,5 +117,3 @@ RSpec.describe DieselEngine do
     end
   end
 end
-
-
